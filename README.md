@@ -1,5 +1,5 @@
 # Lambda-Calc-Compiler
-## Lambda Calculus JS Compiler, REPL, Interpreter, &amp; C++ Library!
+## Lambda Calculus JS Compiler, Interpreter, REPL, &amp; C++ Library!
  ----------------------------------------------------------------------------
 # JavaScript `LCC.js` Compiler, REPL, & Interpreter:
 ## Compilation Prefix:
