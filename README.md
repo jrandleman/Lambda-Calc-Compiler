@@ -185,7 +185,7 @@
 * *Flip/LogicalNot,   Cardinal*:   `C := \fab.fba`
 * *Unary Compose,     Bluebird*:   `B := \fga.f(ga)`
 
-* *Self-Replication,  Mockingbird* `M := \f.f(f)` => ___IMPOSSIBLE IN HASKELL (Infinite Data Struct, I tried)___
+* *Self-Replication,  Mockingbird* `M := \f.f(f)` => ___IMPOSSIBLE IN HASKELL (Infinite Data Struct, I tried lol)___
 
 * *Second/False/Zero, Kite*:       `KI := \ab.b        = K I = C K`
 * *Binary Compose,    Blackbird*:  `B1 := \fgab.f(gab) = B B B`
