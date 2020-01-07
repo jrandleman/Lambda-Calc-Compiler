@@ -1,5 +1,47 @@
 # Lambda-Calc-Compiler
 ## Lambda Calculus JS Compiler, REPL, Interpreter, &amp; C++ Library!
+ ----------------------------------------------------------------------------
+# JavaScript `LCC.js` Compiler, REPL, & Interpreter:
+## Using the REPL (_Launches by Default!_):
+#### REPL COMMANDS (case-insensitive):
+ 0) `lci> EXIT` _to exit,_
+ 1) `lci> HELP` _for this message,_
+ 2) `lci> SHOW-HISTORY` _to print REPL history,_
+ 3) `lci> SAVE-HISTORY filename` _to save REPL history to "filename"_
+#### REPL FILE COMPILATION & LOADING:
+ 0) `lci> LCC filename` _compile + exit,_
+ 1) `lci> LCI filename` _interpret/evaluate + exit,_
+ 2) `lci> COMPILE filename` _compile,_
+ 3) `lci> LOAD filename` _load into REPL's history buffer_
+#### REPL DEFAULT LIBRARY:
+ 0) `lci> LOAD-LIB` _load lambdas from "JS_LambdaCalc_SampleExec.js"_
+#### REPL CODING:
+ 0) `lci> @JS your_JS_expr` _to run "your_JS_expr" as JavaScript,_
+ 1) `lci> your_LC_expr` _to inertpret & run your Lambda Calculus!_
+----------------------------------------------------------------------------
+## Lambda Calculus REPL Notation & Information:
+### RESERVED CHARS: 
+ 0) _WHITESPACE + `. \ ( ) @`_
+ 
+### NAMING:
+ 0) _ALL __LAMBDAS__ BEGIN W/ __CAPITAL LETTER__ & ONLY USE __ALPHANUMERICS__ + `_`_
+ 1) _ALL __DATA__ (ARGS W/IN FCNS) ARE A __SINGLE LOWERCASE LETTER___
+ 
+### LAMBDA STRUCTURE:
+ 0) `LambdaName := \<args>.<returned operation>`
+ 1) _ALL LAMBDAS ARE __IMMUTABLE___
+ 2) _ALL LAMBDAS __CURRY__ ARGS_
+ 3) _ALL LAMBDAS __RETURNS THEIR BODY___
+ 
+### EMBEDDING JS:
+0) _SWAP BTWN "__LAMBDA CALCULUS__" & "__JAVASCRIPT__" SCOPES VIA TAGS:_
+   * `@JS` = _ALL FOLLOWING CODE IS JAVASCRIPT TO BE LEFT AS IS_
+   * `@LC` = _ALL FOLLOWING CODE IS LAMBDA CALC TO BE CONVERTED_
+ ```
+  @JS
+    .. your JS here ..
+  @LC
+ ```
 
  ----------------------------------------------------------------------------
 # C++ Library:
