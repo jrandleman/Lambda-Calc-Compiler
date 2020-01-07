@@ -3,7 +3,7 @@
 
  ----------------------------------------------------------------------------
 # C++ Library:
-### NAMESPACE LambdaCalc LAMBDAS
+### NAMESPACE `LambdaCalc` LAMBDAS
 * _ALL DATA IS IMMUTABLE (`CONST`)_
 * _ALL LAMBDAS ARE CURRIED ( IE `Add(ox1, ox2)` => `Add(ox1)(ox2)` )_
 * _CAPTURE SCOPE BY ***VALUE*** (using `[=]`) FOR INNER - CURRIED! - LAMBDAS_
