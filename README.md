@@ -2,6 +2,10 @@
 ## Lambda Calculus JS Compiler, REPL, Interpreter, &amp; C++ Library!
  ----------------------------------------------------------------------------
 # JavaScript `LCC.js` Compiler, REPL, & Interpreter:
+## Compilation Prefix:
+0) _Compiled Lambda Calc Files have an `LCC_` Prefix & become native JavaScript_
+1) _See [JS_LambdaCalc_SampleExec.js](https://github.com/jrandleman/Lambda-Calc-Compiler/blob/master/JS-SampleExec/JS_LambdaCalc_SampleExec.js)'s compilation into [LCC_JS_LambdaCalc_SampleExec.js](https://github.com/jrandleman/Lambda-Calc-Compiler/blob/master/JS-SampleExec/LCC_JS_LambdaCalc_SampleExec.js) for more!_
+
 ## Using the REPL (_Launches by Default!_):
 #### REPL COMMANDS (case-insensitive):
  0) `lci> EXIT` _to exit,_
@@ -14,7 +18,7 @@
  2) `lci> COMPILE filename` _compile,_
  3) `lci> LOAD filename` _load into REPL's history buffer_
 #### REPL DEFAULT LIBRARY:
- 0) `lci> LOAD-LIB` _load lambdas from "JS_LambdaCalc_SampleExec.js"_
+ 0) `lci> LOAD-LIB` _load lambdas from [JS_LambdaCalc_SampleExec.js](https://github.com/jrandleman/Lambda-Calc-Compiler/blob/master/JS-SampleExec/JS_LambdaCalc_SampleExec.js)_
 #### REPL CODING:
  0) `lci> @JS your_JS_expr` _to run "your_JS_expr" as JavaScript,_
  1) `lci> your_LC_expr` _to inertpret & run your Lambda Calculus!_
