@@ -69,12 +69,8 @@ const IsFactorPhi = (m)=>(p)=>(V)((Eq)((B)(Succ)(Fst)(p))(m)(Zero)((B)(Succ)(Fst
 const IsFactor = (m)=>(n)=>(Is0)(m)(False)((Is0)(n)(True)((B)(Is0)(Pred)(m)(True)((Gt)(m)(n)(False)((Eq)(m)(n)(True)((Snd)((n)((IsFactorPhi)(m))((V)(Zero)(True))))))));
 const Evenp = (IsFactor)(Twice);
 const Oddp = (B1)(Not)(IsFactor)(Twice);
-const Triple = (B1)(C)(V);
-const tFst = (p)=>(p)((B1)(K)(K));
-const tSnd = (p)=>(p)((B1)(K)(KI));
-const tTrn = (p)=>(p)((B1)(KI)(K));
-const TriplePhiApply = (f)=>(p)=>(Triple)((tSnd)(p))((B)(Succ)(tSnd)(p))((f)((tSnd)(p))((tTrn)(p)));
-const NumericApplyToRange = (f)=>(m)=>(n)=>(tTrn)((n)((TriplePhiApply)(f))((Triple)(Zero)(Once)(m)));
+const NumericApplyPhi = (f)=>(p)=>(V)((B)(Succ)(Fst)(p))((f)((Fst)(p))((Snd)(p)));
+const NumericApplyToRange = (f)=>(m)=>(n)=>(Snd)((n)((NumericApplyPhi)(f))((V)(Once)(m)));
 const Factorial = (NumericApplyToRange)(Mult)(Once);
 const NumericSum = (NumericApplyToRange)(Add)(Zero);
 const NumericSumRange = (m)=>(n)=>(Sub)((NumericSum)(n))((NumericSum)(m));
@@ -107,8 +103,8 @@ const Reverse = (l)=>(Is0)((B)(Pred)(Length)(l))(l)((Snd)((B)(Pred)(Length)(l)((
 const FlipArgs = (C);
 const Backward = (f)=>(B)(Reverse)((B)(f)(Reverse));
 const BackwardAtomic = (f)=>(B)(f)(Reverse);
-const FoldlPhi = (f)=>(l)=>(p)=>(Triple)((tSnd)(p))((B)(Succ)(tSnd)(p))((f)((Nth)((tSnd)(p))(l))((tTrn)(p)));
-const Foldl = (f)=>(e)=>(l)=>(Is0)((Length)(l))(Zero)((tTrn)(((Length)(l))((FoldlPhi)(f)(l))((Triple)(Zero)(Once)(e))));
+const FoldlPhi = (f)=>(l)=>(p)=>(V)((B)(Succ)(Fst)(p))((f)((Nth)((Fst)(p))(l))((Snd)(p)));
+const Foldl = (f)=>(e)=>(l)=>(Is0)((Length)(l))(Zero)((Snd)(((Length)(l))((FoldlPhi)(f)(l))((V)(Once)(e))));
 const Foldr = (f)=>(e)=>(l)=>(Is0)((Length)(l))(Zero)((BackwardAtomic)((Foldl)(f)(e))(l));
 const Max = (Foldl)((a)=>(b)=>(Gt)(a)(b)(a)(b))(Zero);
 const Min = (l)=>(Foldl)((a)=>(b)=>(Lt)(a)(b)(a)(b))((Head)(l))(l);
