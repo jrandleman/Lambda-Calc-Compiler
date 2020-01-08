@@ -257,9 +257,9 @@ const showReplHelpMessage = () => {
   printLn("      (2) 'lci> COMPILE filename' compile,");
   printLn("      (3) 'lci> LOAD filename' load into REPL's history buffer");
   printLn("lci> \x1b[1mREPL HISTORY MANIPULATION:\x1b[0m");
-  printLn("      (0) 'lci> SHOW-HISTORY' to print REPL history,");
-  printLn("      (1) 'lci> SAVE-HISTORY filename' to save REPL history to \"filename\",");
-  printLn("      (2) 'lci> CLEAR-HISTORY' to clear REPL history,");
+  printLn("      (0) 'lci> SHOW-HISTORY' print REPL history,");
+  printLn("      (1) 'lci> SAVE-HISTORY filename' save REPL history to \"filename\",");
+  printLn("      (2) 'lci> CLEAR-HISTORY' clear REPL history,");
   printLn("      (3) 'lci> DELETE lineNumber' delete code at \"lineNumber\",");
   printLn("      (4) 'lci> REPLACE lineNumber newCode' rewrite \"lineNumber\" w/ \"newCode\",");
   printLn("      (5) 'lci> INSERT lineNumber newCode' insert \"newCode\" \x1b[1mPRIOR\x1b[0m \"lineNumber\"");
