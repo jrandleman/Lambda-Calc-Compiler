@@ -9,14 +9,19 @@
 ## Using the REPL (_Launches by Default!_):
 #### REPL COMMANDS (case-insensitive):
  0) `lci> EXIT` _to exit,_
- 1) `lci> HELP` _for this message,_
- 2) `lci> SHOW-HISTORY` _to print REPL history,_
- 3) `lci> SAVE-HISTORY filename` _to save REPL history to "filename"_
+ 1) `lci> HELP` _for this message_
 #### REPL FILE COMPILATION & LOADING:
  0) `lci> LCC filename` _compile + exit,_
  1) `lci> LCI filename` _interpret/evaluate + exit,_
  2) `lci> COMPILE filename` _compile,_
  3) `lci> LOAD filename` _load into REPL's history buffer_
+#### REPL HISTORY MANIPULATION:
+ 0) `lci> SHOW-HISTORY` _print REPL history,_
+ 1) `lci> SAVE-HISTORY filename` _save REPL history to "filename",_
+ 2) `lci> CLEAR-HISTORY` _clear REPL history,_
+ 3) `lci> DELETE lineNumber` _delete code at "lineNumber",_
+ 4) `lci> REPLACE lineNumber newCode` _rewrite "lineNumber" w/ "newCode",_
+ 5) `lci> INSERT lineNumber newCode` _insert "newCode" **PRIOR** "lineNumber"_
 #### REPL DEFAULT LIBRARY:
  0) `lci> LOAD-LIB` _load lambdas from [JS_LambdaCalc_SampleExec.js](https://github.com/jrandleman/Lambda-Calc-Compiler/blob/master/JS-SampleExec/JS_LambdaCalc_SampleExec.js)_
 #### REPL CODING:
