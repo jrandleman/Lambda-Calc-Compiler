@@ -375,39 +375,25 @@ namespace LambdaCalc {
   const auto Oddp = B1(Not)(IsFactor)(Twice);
 
   /******************************************************************************
-  * CUSTOM FCNAL DATA STRUCTURE => "TRIPLE" !!!
+  * FACTORIAL & SUMMATION OF CHURCH NUMERALS
   ******************************************************************************/
 
-  // CUSTOM FCNAL DATA STRUCTURE => "TRIPLE" !!!
-  // TRIPLE-PAIR! (Vireo+1) Triple := B1 C V = (B B B)C(B C Th)
-  //   => Triple a b c f := (B1 C V) a b c f = C(V a b)c f = (V a b)f c = f a b c
-  const auto Triple = B1(C)(V);
-
-  // Fst, Snd, & 'Ternary' GETTERS FOR THE PURELY FCNAL "Triple" Data Structure!
-  //   => 'Fst' returns 1st cell in Triple, 'Snd' the 2nd, & 'Trn' the 3rd !!!
-  // tFst := \p.p(B1 K K), tSnd := \p.p(B1 K KI), tTrn := \p.p(B1 KI K)
-  const auto tFst = [](const auto p){return p(B1(K)(K));};
-  const auto tSnd = [](const auto p){return p(B1(K)(KI));};
-  const auto tTrn = [](const auto p){return p(B1(KI)(K));}; // 'K' here could also be KI or I
-
-  // Preforms Phi + Applies a given fcn to the old tSnd & tTrn & stores the result in the new tTrn
+  // Preforms Phi + Applies a given fcn to the old Fst & Snd & stores the result in the new Snd
   //   => Takes fcn as first arg to be able to bind it as a single fcn w/ Church Numerals
-  // TriplePhiApply := \fp.Triple(tSnd p)(B Succ tSnd p)(f(tSnd p)(tTrn p))
-  const auto TriplePhiApply = [](const auto f){
-    return [=](const auto p){return Triple(tSnd(p))(Succ(tSnd(p)))(f(tSnd(p))(tTrn(p)));};
+  // NumericApplyPhi := \fp.V(B Succ Fst p)(f(Fst p)(Snd p))
+  const auto NumericApplyPhi = [](const auto f){
+    return [=](const auto p){return V(Succ(Fst(p)))(f(Fst(p))(Snd(p)));};
   };
 
-  // MAPPING HELPER LAMBDA USING "Triple" DATA STRUCT !!! 
-  //   => apply binary fcn f across Integers [m,n]
-  // NumericApplyToRange := \fmn.tTrn(n(TriplePhiApply f)(Triple Zero Once m))
-  //   => Enables 'mapping' a fcn across integers w/ a 'Triple'
+  // Map a binary fcn f across Church Numerals [m,n] via 'Vireo'
+  // NumericApplyToRange := \fmn.Snd(n(NumericApplyPhi f)(V Once m))
   const auto NumericApplyToRange = [](const auto f){return [=](const auto m){return [=](const auto n){
-    return tTrn(n(TriplePhiApply(f))(Triple(Zero)(Once)(m)));
+    return Snd(n(NumericApplyPhi(f))(V(Once)(m)));
   };};};
 
   // Factorial := NumericApplyToRange Mult Once
   const auto Factorial = NumericApplyToRange(Mult)(Once);
-  // NumericSum [0,n]: NumericSum := NumericApplyToRange Add Zero
+  // NumericSum := NumericApplyToRange Add Zero
   const auto NumericSum = NumericApplyToRange(Add)(Zero);
   // NumericSum [m,n]: NumericSumRange := \mn.Sub(NumericSum n)(NumericSum m)
   const auto NumericSumRange = [](const auto m){return [=](const auto n){
@@ -442,7 +428,7 @@ namespace LambdaCalc {
 
   // CUSTOM TRIPLE-PAIR! (Vireo+1) Triple := B1 C V = (B B B)C(B C Th)
   //   => Triple a b c f := (B1 C V) a b c f = C(V a b)c f = (V a b)f c = f a b c
-  const auto Tripair = B1(C)(Tuple); // What "Triple" above is
+  const auto Triple = B1(C)(Tuple); // What "Triple" above is
 
 
   // VIREO PAIR GIVEN CONTAINS COMPOSER IN "Fst", LIST IN "Snd"
@@ -653,20 +639,20 @@ namespace LambdaCalc {
   * LIST ACCUMULATOR
   ******************************************************************************/
 
-  // Applies Phi & Folds Nth cell in List 'l' (Nth's n coming from (tSnd p))
-  //   over the prior value in (tTrn p)
-  // FoldlPhi := \flp.Triple(tSnd p)(B Succ tSnd p)(f(Nth(tSnd p)l)(tTrn p))
+  // Applies Phi & Folds Nth cell in List 'l' (Nth's n coming from (Fst p))
+  //   over the prior value in (Snd p)
+  // FoldlPhi := \flp.V(B Succ Fst p)(f(Nth(Fst p)l)(Snd p))
   const auto FoldlPhi = [](const auto f){return [=](const auto l){return [=](const auto p){
-    return Triple(tSnd(p))(Succ(tSnd(p)))(f(Nth(tSnd(p))(l))(tTrn(p)));
+    return V(Succ(Fst(p)))(f(Nth(Fst(p))(l))(Snd(p)));
   };};};
 
   // Fold cells in List 'l' on top of one another w/ BINARY fcn 'f',
   //   starting from "elt" on (Head l) (from 'l'eft to right)
-  // Foldl := \fel.Is0(Length l)Zero(tTrn((Length l)(FoldlPhi f l)(Triple Zero Once e)))
+  // Foldl := \fel.Is0(Length l)Zero(Snd((Length l)(FoldlPhi f l)(V Once e)))
   const auto Foldl = [](const auto f){return [=](const auto elt){return [=](const auto l){
     return Is0(Length(l))
             (Zero)
-            (tTrn((Length(l))(FoldlPhi(f)(l))(Triple(Zero)(Once)(elt)))); // (Once) b/c Nth starts @ 1
+            (Snd((Length(l))(FoldlPhi(f)(l))(V(Once)(elt)))); // (Once) b/c Nth starts @ 1
   };};};
 
   // Fold cells in List 'l' on top of one another w/ BINARY fcn 'f',
