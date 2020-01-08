@@ -21,8 +21,6 @@
 
 const LCC_LIBRARY = 
 `@JS
-// custom_list_from_cpp.js
-
 // Show any data
 const show = console.log;
 
@@ -226,6 +224,112 @@ const restoreEmbeddedJS = (embeddedJS, buff) => buff.replace(/const #(\d+);/g, (
 const executeInterpreter = (buff, embeddedJS = []) => restoreEmbeddedJS(embeddedJS,convertLambdaCalcToJS(registerEmbeddedJS(embeddedJS,buff)));
 
 /********************************************************************************
+ * REPL HELPER FUNCTIONS
+********************************************************************************/
+
+// Returns whether or not an input contains a paricular command
+const isCommand = (input, cmd) => input.substr(0,cmd.length).includes(cmd);
+
+// Outputs REPL's history buffer + Bolded Line Numbers
+const showHistory = replBuff => {
+  if(replBuff.length === 0) {
+    printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
+    return;
+  }
+  let lineNumber = 0; 
+  const maxLineNumberDigits = (replBuff.split('\n').length-1).toString().length;
+  printLn("lci> \x1b[1mREPL HISTORY:\x1b[0m");
+  printLn("=".repeat(80));
+  printLn(
+    ('\n'+replBuff.trim()).replace(/\n/g, 
+      () => `\n\x1b[1m${(++lineNumber).toString().padStart(maxLineNumberDigits,'0')})\x1b[0m `));
+  printLn("=".repeat(80));
+}
+
+// Displays REPL's commands upon being invoked by "HELP" REPL command
+const showReplHelpMessage = () => {
+  printLn("lci> \x1b[1mREPL COMMANDS (case-insensitive):\x1b[0m");
+  printLn("      (0) 'lci> EXIT' to exit,");
+  printLn("      (1) 'lci> HELP' for this message");
+  printLn("lci> \x1b[1mREPL FILE COMPILATION & LOADING:\x1b[0m");
+  printLn("      (0) 'lci> LCC filename' compile + exit,");
+  printLn("      (1) 'lci> LCI filename' interpret/evaluate + exit,");
+  printLn("      (2) 'lci> COMPILE filename' compile,");
+  printLn("      (3) 'lci> LOAD filename' load into REPL's history buffer");
+  printLn("lci> \x1b[1mREPL HISTORY MANIPULATION:\x1b[0m");
+  printLn("      (0) 'lci> SHOW-HISTORY' to print REPL history,");
+  printLn("      (1) 'lci> SAVE-HISTORY filename' to save REPL history to \"filename\",");
+  printLn("      (2) 'lci> CLEAR-HISTORY' to clear REPL history,");
+  printLn("      (3) 'lci> DELETE lineNumber' delete code at \"lineNumber\",");
+  printLn("      (4) 'lci> REPLACE lineNumber newCode' rewrite \"lineNumber\" w/ \"newCode\",");
+  printLn("      (5) 'lci> INSERT lineNumber newCode' insert \"newCode\" \x1b[1mPRIOR\x1b[0m \"lineNumber\"");
+  printLn("lci> \x1b[1mREPL DEFAULT LIBRARY:\x1b[0m");
+  printLn("      (0) 'lci> LOAD-LIB' load lambdas from \"JS_LambdaCalc_SampleExec.js\"");
+  printLn("lci> \x1b[1mREPL CODING:\x1b[0m");
+  printLn("      (0) 'lci> @JS your_JS_expr' to run \"your_JS_expr\" as JavaScript,");
+  printLn("      (1) 'lci> your_LC_expr' to inertpret & run your Lambda Calculus!"); 
+}
+
+// Displays an error if given an invalid line # for the REPL history buffer,
+// and returns whether or not said error was encountered
+const validReplLineNo = (lineNo, replBuff, insertingLine = 0) => {
+  const totalLines = replBuff.split('\n').length-1;
+  if(isNaN(lineNo) || lineNo < 1 || lineNo > (totalLines+insertingLine)) { // totalLines+1 enables appending buffer via "insert"
+    printLn("lci> \x1b[1m\x1b[31mREPL ERROR:\x1b[0m\x1b[1m Invalid Line Number!\x1b[0m");
+    const err = "Line Number is " + (isNaN(lineNo) ? "Nan" : (lineNo < 1) 
+                                      ? "< 1" : ("> total lines in buffer (" + totalLines + ")")) + "!";
+    printLn(" ".repeat(17) + err);
+    return false;
+  }
+  return true;
+}
+
+// Deletes the given lineNo from replBuffer (if exists, else outputs an error)
+// Returns current replBuffer, post-deletion or error detection
+const deleteLine = (lineNo, replBuff) => {
+  if(replBuff.length === 0) {
+    printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
+  } else {
+    if(!validReplLineNo(lineNo, replBuff)) return replBuff;
+    let bufferLines = ('\n'+replBuff.trim()).split('\n');
+    bufferLines.splice(lineNo,1); // rm line specified
+    replBuff = bufferLines.join('\n');
+    printLn("lci> \x1b[1mLine " + lineNo + " Deleted!\x1b[0m");
+  }
+  return replBuff;
+}
+
+// Replaces the given lineNo from replBuffer (if exists, else outputs an error)
+// Returns current replBuffer, post-replacement or error detection
+const replaceLine = (lineNo, newCode, replBuff) => {
+  if(replBuff.length === 0) {
+    printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
+  } else {
+    if(!validReplLineNo(lineNo, replBuff)) return replBuff;
+    let bufferLines = ('\n'+replBuff.trim()).split('\n');
+    bufferLines[lineNo] = newCode; // replace line specified
+    replBuff = bufferLines.join('\n');
+    printLn("lci> \x1b[1mLine " + lineNo + " Replaced!\x1b[0m");
+  }
+  return replBuff;
+}
+
+// Inserts code BEFORE the given lineNo from replBuffer (if exists, else outputs an error)
+// Returns current replBuffer, post-insertion or error detection
+const insertLine = (lineNo, newCode, replBuff) => {
+  if(replBuff.length === 0) {
+    printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
+  } else {
+    if(!validReplLineNo(lineNo, replBuff,1)) return replBuff;
+    let bufferLines = ('\n'+replBuff.trim()).split('\n');
+    bufferLines.splice(lineNo, 0, newCode); // insert line specified
+    replBuff = bufferLines.join('\n');
+    printLn("lci> \x1b[1mLine " + lineNo + " Inserted!\x1b[0m");
+  }
+  return replBuff;
+}
+
+/********************************************************************************
  * LAUNCH REPL
 ********************************************************************************/
 
@@ -259,95 +363,97 @@ repl.on('line', line => {
   const possible_command = line.toUpperCase().trim();
   switch(possible_command) {
     case "EXIT": repl.close(); // launch close method
-    case "HELP":
-      printLn("lci> \x1b[1mREPL COMMANDS (case-insensitive):\x1b[0m");
-      printLn("      (0) 'lci> EXIT' to exit,");
-      printLn("      (1) 'lci> HELP' for this message,");
-      printLn("      (2) 'lci> SHOW-HISTORY' to print REPL history,");
-      printLn("      (3) 'lci> SAVE-HISTORY filename' to save REPL history to \"filename\"");
-      printLn("lci> \x1b[1mREPL FILE COMPILATION & LOADING:\x1b[0m");
-      printLn("      (0) 'lci> LCC filename' compile + exit,");
-      printLn("      (1) 'lci> LCI filename' interpret/evaluate + exit,");
-      printLn("      (2) 'lci> COMPILE filename' compile,");
-      printLn("      (3) 'lci> LOAD filename' load into REPL's history buffer");
-      printLn("lci> \x1b[1mREPL DEFAULT LIBRARY:\x1b[0m");
-      printLn("      (0) 'lci> LOAD-LIB' load lambdas from \"JS_LambdaCalc_SampleExec.js\"");
-      printLn("lci> \x1b[1mREPL CODING:\x1b[0m");
-      printLn("      (0) 'lci> @JS your_JS_expr' to run \"your_JS_expr\" as JavaScript,");
-      printLn("      (1) 'lci> your_LC_expr' to inertpret & run your Lambda Calculus!"); 
-      repl.prompt();
-      return;
-    case "SHOW-HISTORY":
-      switch(replBuffer.length) {
-        case 0: printLn("lci> \x1b[1mNO REPL HISTORY!\x1b[0m");
-        default: printLn("lci> \x1b[1mREPL HISTORY:\x1b[0m"), printLn("=".repeat(80)), printLn(replBuffer), printLn("=".repeat(80)); break;
-      }
-      repl.prompt();
-      return;
+    case "HELP": showReplHelpMessage(); repl.prompt(); return;
+    case "SHOW-HISTORY": showHistory(replBuffer); repl.prompt(); return;
   }
 
   // if commanded to save REPL history
-  if(possible_command.includes("SAVE-HISTORY")) {
+  if(isCommand(possible_command, "SAVE-HISTORY")) {
     if(replBuffer.length === 0) {
-      printLn("lci> \x1b[1mNO REPL HISTORY!\x1b[0m");
+      printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
     } else {
-      const filename = line.replace(/[S|s][A|a][V|v][E|e]-[H|h][I|i][S|s][T|t][O|o][R|r][Y|y]/g, '').trim(); // Lol
+      const filename = line.replace(/[S|s][A|a][V|v][E|e]-[H|h][I|i][S|s][T|t][O|o][R|r][Y|y]/, '').trim(); // lol
       fs.writeFile(filename,replBuffer,(err, data) => {
-        if(err) printLn('  =>\x1b[1mLCC.js> \x1b[31mREPL ERROR:\x1b[0m\x1b[0m'), printLn(err);
+        if(err) printLn('lci> \x1b[1m\x1b[31mREPL ERROR:\x1b[0m'), printLn(err);
         else printLn('\x1b[1mWritten to ' + filename + '!\x1b[0m');
-        repl.prompt();
-        return;
+        repl.prompt(); return;
       });
     }
-    repl.prompt();
-    return;
+    repl.prompt(); return;
+  }
+
+  // if commanded to clear REPL history
+  if(isCommand(possible_command, "CLEAR-HISTORY")) {
+    replBuffer = [];
+    printLn('lci> \x1b[1mHistory Cleared!\x1b[0m');
+    repl.prompt(); return;
+  }
+
+  // if commanded to delete a line in REPL history buffer
+  if(isCommand(possible_command,"DELETE ")) {
+    const lineNumber = parseInt(line.replace(/[D|d][E|e][L|l][E|e][T|t][E|e] /, '').trim(), 10);
+    replBuffer = deleteLine(lineNumber,replBuffer);
+    repl.prompt(); return;
+  }
+
+  // if commanded to delete a line in REPL history buffer
+  if(isCommand(possible_command,"REPLACE ")) {
+    const lineNumber = parseInt(line.replace(/[R|r][E|e][P|p][L|l][A|a][C|c][E|e] /, '').trim(), 10);
+    let newCodeLines = line.replace(/[R|r][E|e][P|p][L|l][A|a][C|c][E|e] /, '').trim().split(' ');
+    newCodeLines.shift(); // rm line number from input
+    replBuffer = replaceLine(lineNumber,newCodeLines.join(' '),replBuffer);
+    repl.prompt(); return;
+  }
+
+  // if commanded to insert BEFORE a line in REPL history buffer
+  if(isCommand(possible_command,"INSERT ")) {
+    const lineNumber = parseInt(line.replace(/[I|i][N|n][S|s][E|e][R|r][T|t] /, '').trim(), 10);
+    let newCodeLines = line.replace(/[I|i][N|n][S|s][E|e][R|r][T|t] /, '').trim().split(' ');
+    newCodeLines.shift(); // rm line number from input
+    replBuffer = insertLine(lineNumber,newCodeLines.join(' '),replBuffer);
+    repl.prompt(); return;
   }
 
   // if commanded to compile a file
-  if(possible_command.includes("LCC ") || possible_command.includes("COMPILE ")) {
-    const filename = (possible_command.includes("COMPILE ")) ? 
-                      line.replace(/[C|c][O|o][M|m][P|p][I|i][L|l][E|e] /g, '').trim() : 
-                      line.replace(/[L|l][C|c][C|c] /g, '').trim();
+  if(isCommand(possible_command,"LCC ") || isCommand(possible_command,"COMPILE ")) {
+    const filename = (isCommand(possible_command,"COMPILE ")) ? 
+                      line.replace(/[C|c][O|o][M|m][P|p][I|i][L|l][E|e] /, '').trim() : 
+                      line.replace(/[L|l][C|c][C|c] /, '').trim();
     fs.readFile(filename, 'utf-8', (err, data) => {
       if(err) throw err;
       fs.writeFile(`LCC_${filename}`,executeInterpreter(data),(err, data) => {
         if(err) throw err;
         printLn(`\x1b[1mCompiled ${filename} => LCC_${filename}!\x1b[0m`);
-        if(possible_command.includes("LCC ")) repl.close();
-        repl.prompt(); 
-        return;
+        if(isCommand(possible_command,"LCC ")) repl.close();
+        repl.prompt(); return;
       });
     });
-    repl.prompt(); 
-    return;
+    repl.prompt(); return;
   }
 
   // if commanded to interpret a file
-  if(possible_command.includes("LCI ") || possible_command.includes("LOAD ")) {
-    const filename = possible_command.includes("LOAD ") ? 
-                      line.replace(/[L|l][O|o][A|a][D|d] /g, '').trim() : 
-                      line.replace(/[L|l][C|c][I|i] /g, '').trim();
+  if(isCommand(possible_command,"LCI ") || isCommand(possible_command,"LOAD ")) {
+    const filename = isCommand(possible_command,"LOAD ") ? 
+                      line.replace(/[L|l][O|o][A|a][D|d] /, '').trim() : 
+                      line.replace(/[L|l][C|c][I|i] /, '').trim();
     printLn(`lci> \x1b[1mInterpreting ${filename} ..\x1b[0m`);
     fs.readFile(filename, 'utf-8', (err, data) => {
       if(err) throw err;
-      if(possible_command.includes("LCI ")) {
+      if(isCommand(possible_command,"LCI ")) {
         eval(executeInterpreter(data));
         repl.close();
       }
       replBuffer += executeInterpreter(data) + '\n';
-      repl.prompt(); 
-      return;
+      repl.prompt(); return;
     });
-    repl.prompt(); 
-    return;
+    repl.prompt(); return;
   }
 
   // if commanded to import premade lambda-calc library
-  if(possible_command.includes("LOAD-LIB")) {
+  if(isCommand(possible_command,"LOAD-LIB")) {
     replBuffer += executeInterpreter(LCC_LIBRARY) + '\n';
     printLn("lci> \x1b[1mLibrary Loaded!\x1b[0m");
-    repl.prompt(); 
-    return;
+    repl.prompt(); return;
   }
 
   // try evaluating input
@@ -361,7 +467,7 @@ repl.on('line', line => {
     }
     repl.prompt(); // reprompt to retrigger 'line' method
   } catch(err) {
-    printLn('  =>\x1b[1mLCC.js> \x1b[31mREPL ERROR:\x1b[0m\x1b[0m');
+    printLn('lci> \x1b[1m\x1b[31mREPL ERROR:\x1b[0m');
     printLn(err);
     repl.prompt();
   }
