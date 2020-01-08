@@ -84,13 +84,8 @@ IsFactor := \mn.Is0 m False (Is0 n True (B Is0 Pred m True (Gt mn False (Eq mn T
 Evenp := IsFactor Twice
 Oddp := B1 Not IsFactor Twice
 
-
-Triple := B1 C V
-tFst := \p.p(B1 K K)
-tSnd := \p.p(B1 K KI)
-tTrn := \p.p(B1 KI K)
-TriplePhiApply := \fp.Triple(tSnd p)(B Succ tSnd p)(f(tSnd p)(tTrn p))
-NumericApplyToRange := \fmn.tTrn(n(TriplePhiApply f)(Triple Zero Once m))
+NumericApplyPhi := \fp.V(B Succ Fst p)(f(Fst p)(Snd p))
+NumericApplyToRange := \fmn.Snd(n(NumericApplyPhi f)(V Once m))
 
 Factorial := NumericApplyToRange Mult Once
 NumericSum := NumericApplyToRange Add Zero
@@ -136,8 +131,8 @@ FlipArgs := C
 Backward := \f.B Reverse(B f Reverse)
 BackwardAtomic := \f.B f Reverse
 
-FoldlPhi := \flp.Triple(tSnd p)(B Succ tSnd p)(f(Nth(tSnd p)l)(tTrn p))
-Foldl := \fel.Is0(Length l)Zero(tTrn((Length l)(FoldlPhi fl)(Triple Zero Once e)))
+FoldlPhi := \flp.V(B Succ Fst p)(f(Nth(Fst p)l)(Snd p))
+Foldl := \fel.Is0(Length l)Zero(Snd((Length l)(FoldlPhi f l)(V Once e)))
 Foldr := \fel.Is0(Length l)Zero(BackwardAtomic(Foldl fe)l)
 
 Max := Foldl(\ab.Gt abab)Zero
