@@ -150,8 +150,10 @@
 * `Nth  (N)(L)` => _Returns L's 'N'th elt (starting from 'ox1')_
  
  #### SETTERS: 
-* `Push (X)(L)` => _Returns List w/ X in front of L_
-* `Pop  (L)`    => _Returns List w/o L's Head_
+* `Insert (N)(X)(L)` => _Returns List w/ X inserted in L __AFTER__ nth position_
+* `Erase  (N)(L)`    => _Returns List w/ L's nth value erased_
+* `Push   (X)(L)`    => _Returns List w/ X in front of L_
+* `Pop    (L)`       => _Returns List w/o L's Head_
   * ***NOTE**: "_back" versions may be self-implemented via "`Backward`" fcn (More Below)*
  
  #### FILTER/MAP/VOIDMAP:
