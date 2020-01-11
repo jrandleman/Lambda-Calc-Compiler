@@ -131,7 +131,7 @@
 * `NumericSumRange (N1)(N2)` => _Sum (N1,N2)_
  
  ----------------------------------------------------------------------------
-### PURELY-FCNAL LIST DATA-STRUCTURE FCNS:
+### PURELY-FUNCTIONAL LIST DATA-STRUCTURE FCNS:
 
 #### CONTAINMENT
 * _Lists can contain __ANY__ fcn, including Church Numerals & __even other Lists!___
