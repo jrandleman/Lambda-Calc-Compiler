@@ -137,6 +137,7 @@
  *   => cadr   (L) => Head(Pop(L))
  *   => caddr  (L) => Head(Pop(Pop(L)))
  *   => cadddr (L) => Head(Pop(Pop(Pop(L))))
+ *   => ANY combo of 1-3 'a's & 'd's btwn 'c' & 'r' for nested list access!
  *
  * ----------------------------------------------------------------------------
  * - IF YOU'VE GOTTEN THIS FAR ...
@@ -694,6 +695,35 @@ namespace LambdaCalc {
   const auto cadr = B(car)(cdr);
   const auto caddr = B(car)(Twice(cdr));
   const auto cadddr = B(car)(Thrice(cdr));
+
+  // FOR LISTS OF LISTS:
+  const auto caar = B(car)(car);
+  const auto cdar = B(cdr)(car);
+  const auto cddr = B(cdr)(cdr);
+
+  const auto caaar = Thrice(car);
+  const auto caadr = B(Twice(car))(cdr);
+  const auto cadar = B(car)(B(cdr)(car));
+  const auto cdaar = B(cdr)(Twice(car));
+  const auto cdadr = B(cdr)(B(car)(cdr));
+  const auto cddar = B(Twice(cdr))(car);
+  const auto cdddr = Thrice(cdr);
+
+  const auto caaaar = Fourfold(car);
+  const auto caaadr = B(Thrice(car))(cdr);
+  const auto caadar = B(Twice(car))(B(cdr)(car));
+  const auto caaddr = B(Twice(car))(Twice(cdr));
+  const auto cadaar = B(B(car)(cdr))(Twice(car));
+  const auto cadadr = B(B(car)(cdr))(B(car)(cdr));
+  const auto caddar = B(B(car)(cdr))(B(cdr)(car));
+  const auto cdaaar = B(cdr)(Thrice(car));
+  const auto cdaadr = B(B(cdr)(car))(B(car)(cdr));
+  const auto cdadar = B(B(cdr)(car))(B(cdr)(car));
+  const auto cdaddr = B(B(cdr)(car))(Twice(cdr));
+  const auto cddaar = B(Twice(cdr))(Twice(car));
+  const auto cddadr = B(Twice(cdr))(B(car)(cdr));
+  const auto cdddar = B(Thrice(cdr))(car);
+  const auto cddddr = Fourfold(cdr);
 
   /******************************************************************************
   * CHURCHILL NUMERALS A LA HEX (ox0-ox5 == Zero-Fivefold)
