@@ -137,7 +137,7 @@
  *   => cadr   (L) => Head(Pop(L))
  *   => caddr  (L) => Head(Pop(Pop(L)))
  *   => cadddr (L) => Head(Pop(Pop(Pop(L))))
- *   => ANY combo of 1-3 'a's & 'd's btwn 'c' & 'r' for nested list access!
+ *   => ANY combo of 1-4 'a's & 'd's btwn 'c' & 'r' for nested list access!
  *
  * ----------------------------------------------------------------------------
  * - IF YOU'VE GOTTEN THIS FAR ...
