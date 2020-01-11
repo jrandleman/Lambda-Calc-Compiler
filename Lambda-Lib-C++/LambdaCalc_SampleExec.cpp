@@ -105,8 +105,10 @@
  *   => Nth  (N)(L) => Returns L's 'N'th elt (starting from 'ox1')
  * 
  * SETTERS: 
- *   => Push (X)(L) => Returns List w/ X in front of L
- *   => Pop  (L)    => Returns List w/o L's Head
+ *   => Insert (N)(X)(L) => Returns List w/ X inserted in L AFTER nth position
+ *   => Erase  (N)(L)    => Returns List w/ L's nth value erased
+ *   => Push   (X)(L)    => Returns List w/ X in front of L
+ *   => Pop    (L)       => Returns List w/o L's Head
  *     => NOTE: "_back" versions may be self-implemented via "Backward" fcn (More Below)
  * 
  * FILTER/MAP/VOIDMAP:
@@ -334,6 +336,11 @@ int main() {
   nshow(Head(Push(oxf)(List2)));
   print("  => Length(Pop(Push(oxf)(List2))): ");
   nshow(Length(Pop(Push(oxf)(List2))));
+  print("  => Erase(ox3)(List1) = ");
+  VoidMap(nprint)(Erase(ox3)(List1));
+  print("\n  => Insert(ox3)(oxc)(List1) = ");
+  VoidMap(nprint)(Insert(ox3)(oxc)(List1));
+  show("");
 
   show("\nFILTER/MAP/VOIDMAP:");
   show("  => We have defined more 2 lists:");
