@@ -106,8 +106,10 @@
  *   => Nth  (N)(L) => Returns L's 'N'th elt (starting from 'ox1')
  * 
  * SETTERS: 
- *   => Push (X)(L) => Returns List w/ X in front of L
- *   => Pop  (L)    => Returns List w/o L's Head
+ *   => Insert (N)(X)(L) => Returns List w/ X inserted in L AFTER nth position
+ *   => Erase  (N)(L)    => Returns List w/ L's nth value erased
+ *   => Push   (X)(L)    => Returns List w/ X in front of L
+ *   => Pop    (L)       => Returns List w/o L's Head
  *     => NOTE: "_back" versions may be self-implemented via "Backward" fcn (More Below)
  * 
  * FILTER/MAP/VOIDMAP:
@@ -724,6 +726,57 @@ namespace LambdaCalc {
   const auto cddadr = B(Twice(cdr))(B(car)(cdr));
   const auto cdddar = B(Thrice(cdr))(car);
   const auto cddddr = Fourfold(cdr);
+
+  /******************************************************************************
+  * RANDOM-ACCESS INSERT/ERASE FROM LIST
+  ******************************************************************************/
+
+  // Decreases idx in 'Fst', and pushes 'l's value at idx to temp list in 'Snd', 
+  //   UNLESS idx = 'nth' insert position, wherein 'elt' is pushed prior 'nth' value to temp list in 'Snd'
+  // InsertPhi := \nelp.V (B Pred Fst p) ((Eq(Fst p)n) 
+  //                                         (Push (B Nth Fst p l) (Push e(Snd p))) 
+  //                                         (Push (B Nth Fst p l) (Snd p)))
+  const auto InsertPhi = [](const auto nth){return [=](const auto elt){return [=](const auto l){return [=](const auto p){
+    return V(Pred(Fst(p)))((Eq(Fst(p))(nth)) (Push(Nth(Fst(p))(l))(Push(elt)(Snd(p)))) (Push(Nth(Fst(p))(l))(Snd(p))));
+  };};};};
+
+  // Inserts 'elt' at 'nth' position in 'l'
+  //   => If 'nth' > 'Length(l)', appends 'elt' to List 'l'
+  // Insert := \nel.Is0 n 
+  //                (Push e l) 
+  //                (Gt n (Length l) 
+  //                   (Backward(Push e)l) 
+  //                   (Snd(Length l)(InsertPhi n e l)(V(Length l)(ListN Zero))))
+  const auto Insert = [](const auto nth){return [=](const auto elt){return [=](const auto l){
+    return Is0(nth)
+           (Push(elt)(l))
+           (Gt(nth)(Length(l))
+              (Backward(Push(elt))(l))
+              (Snd(Length(l)(InsertPhi(nth)(elt)(l))(V(Length(l))(ListN(Zero))))));
+  };};};
+
+
+  // Decrements value idx in 'Fst', & if idx != 'nth' erasure position, pushes 'l's value at idx 
+  //   to temp List in 'Snd' -- else returns temp list in 'Snd' w/o Pushing 'nth' value
+  // ErasePhi := \nlp.V(B Pred Fst p)((Eq(Fst p)n) (Snd p) (Push(B Nth Fst p l)(Snd p)))
+  const auto ErasePhi = [](const auto nth){return [=](const auto l){return [=](const auto p){
+    return V(Pred(Fst(p)))((Eq(Fst(p))(nth)) (Snd(p)) (Push(Nth(Fst(p))(l))(Snd(p))));
+  };};};
+
+  // Erases 'nth' value in 'l'
+  //   => If 'nth' > 'Length(l)' OR = 'Zero', returns List 'l' unchanged
+  // Erase := \nl.Is0(Length l)
+  //              (ListN Zero)
+  //              (Or(Is0 n)(Gt n(Length l))
+  //                 l
+  //                 (Snd(Length l (ErasePhi n l) (V(Length l)(ListN Zero)))))
+  const auto Erase = [](const auto nth){return [=](const auto l){
+    return Is0(Length(l))
+           (ListN(Zero))
+           (Or(Is0(nth))(Gt(nth)(Length(l)))
+              (l)
+              (Snd(Length(l)(ErasePhi(nth)(l))(V(Length(l))(ListN(Zero))))));
+  };};
 
   /******************************************************************************
   * CHURCHILL NUMERALS A LA HEX (ox0-ox5 == Zero-Fivefold)
