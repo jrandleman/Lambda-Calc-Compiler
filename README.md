@@ -177,6 +177,7 @@
 * `cadr   (L)` => _Head(Pop(L))_
 * `caddr  (L)` => _Head(Pop(Pop(L)))_
 * `cadddr (L)` => _Head(Pop(Pop(Pop(L))))_
+* ***Nested-List Access*** => _Any permutation (length 1-4) of 'a' & 'd' btwn 'c' & 'r'!_
 
  ----------------------------------------------------------------------------
 ### IF YOU'VE GOTTEN THIS FAR ...
