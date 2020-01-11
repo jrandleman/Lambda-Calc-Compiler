@@ -136,6 +136,7 @@
  *   => cadr   (L) => Head(Pop(L))
  *   => caddr  (L) => Head(Pop(Pop(L)))
  *   => cadddr (L) => Head(Pop(Pop(Pop(L))))
+ *   => ANY combo of 1-3 'a's & 'd's btwn 'c' & 'r' for nested list access!
  *
  * ----------------------------------------------------------------------------
  * - IF YOU'VE GOTTEN THIS FAR ...
@@ -399,6 +400,25 @@ int main() {
   nshow(caddr(List1));
   print("  => cadddr(List1) = ");
   nshow(cadddr(List1));
+
+  show("\nLISTS OF LISTS:");
+  const auto SuperList1 = ListN(ox3) (ListN(ox2) (ox4) (ox5)) (ListN(ox3) (oxa) (ox2) (ox3)) (ListN(ox1) (ox8));
+  show("  => We have defined a list of 3 lists:");
+  show("     (*) // SuperList1 = [ [4, 5], [10, 2, 3], [8] ]");
+  show("     (0) SuperList1 = ListN(ox3) (ListN(ox2) (ox4) (ox5)) (ListN(ox3) (oxa) (ox2) (ox3)) (ListN(ox1) (ox8));\n");
+  print("  => Head(Head(SuperList1))         = ");
+  nshow(Head(Head(SuperList1)));
+  print("  => Last(Last(SuperList1))         = ");
+  nshow(Last(Last(SuperList1)));
+  print("  => Nth(ox1)(Nth(ox2)(SuperList1)) = ");
+  nshow(Nth(ox1)(Nth(ox2)(SuperList1)));
+  show("  => Using LISP Notation:");
+  print("     -> caar(SuperList1)   = ");
+  nshow(caar(SuperList1));
+  print("     -> caaddr(SuperList1) = ");
+  nshow(caaddr(SuperList1));
+  print("     -> caadr(SuperList1)  = ");
+  nshow(caadr(SuperList1));
 
 
 
