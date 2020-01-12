@@ -746,7 +746,7 @@ namespace LambdaCalc {
   //                (Push e l) 
   //                (Gt n (Length l) 
   //                   (Backward(Push e)l) 
-  //                   (Snd(Length l)(InsertPhi n e l)(V(Length l)(ListN Zero))))
+  //                   (Snd(Length l (InsertPhi n e l)(V(Length l)(ListN Zero)))))
   const auto Insert = [](const auto nth){return [=](const auto elt){return [=](const auto l){
     return Is0(nth)
            (Push(elt)(l))
