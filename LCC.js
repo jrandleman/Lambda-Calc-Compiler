@@ -276,8 +276,8 @@ const showReplHelpMessage = () => {
   printLn("      (5) 'lci> INSERT lineNumber newCode'  insert \"newCode\" \x1b[1mPRIOR\x1b[0m \"lineNumber\"");
   printLn("lci> \x1b[1mREPL DEFAULT LIBRARY:\x1b[0m");
   printLn("      (0) 'lci> LOAD-LIB'    load lambdas from \"JS_LambdaCalc_SampleExec.js\"");
-  printLn("      (1) 'lci> LOAD-PRINT'  printing \"show\" fcns from \"JS_LambdaCalc_SampleExec.js\"");
-  printLn("      (2) 'lci> LOAD-CHURCH' load church numerals from \"JS_LambdaCalc_SampleExec.js\"");
+  printLn("      (1) 'lci> LOAD-PRINT'  load printing \"show\" lambdas");
+  printLn("      (2) 'lci> LOAD-CHURCH' load church numeral lambdas");
   printLn("lci> \x1b[1mREPL CODING:\x1b[0m");
   printLn("      (0) 'lci> @JS your_JS_expr' run \"your_JS_expr\" as JavaScript");
   printLn("      (1) 'lci> your_LC_expr'     interpret & run your Lambda Calculus!"); 
