@@ -8,39 +8,42 @@
 
 ## Using the REPL (_Launches by Default!_):
 #### REPL COMMANDS (case-insensitive):
- 0) `lci> EXIT` _to exit,_
- 1) `lci> HELP` _for this message_
+ 0) `lci> EXIT` _exit REPL_
+ 1) `lci> SYNTAX-HELP` _show Lambda Calculus syntax guide_
+ 2) `lci> HELP` _show this message_
 #### REPL FILE COMPILATION & LOADING:
- 0) `lci> LCC filename` _compile + exit,_
- 1) `lci> LCI filename` _interpret/evaluate + exit,_
- 2) `lci> COMPILE filename` _compile,_
+ 0) `lci> LCC filename` _compile + exit_
+ 1) `lci> LCI filename` _interpret/evaluate + exit_
+ 2) `lci> COMPILE filename` _compile_
  3) `lci> LOAD filename` _load into REPL's history buffer_
 #### REPL HISTORY MANIPULATION:
- 0) `lci> SHOW-HISTORY` _print REPL history,_
- 1) `lci> SAVE-HISTORY filename` _save REPL history to "filename",_
- 2) `lci> CLEAR-HISTORY` _clear REPL history,_
- 3) `lci> DELETE lineNumber` _delete code at "lineNumber",_
- 4) `lci> REPLACE lineNumber newCode` _rewrite "lineNumber" w/ "newCode",_
+ 0) `lci> SHOW-HISTORY` _print REPL history_
+ 1) `lci> SAVE-HISTORY filename` _save REPL history to "filename"_
+ 2) `lci> CLEAR-HISTORY` _clear REPL history_
+ 3) `lci> DELETE lineNumber` _delete code at "lineNumber"_
+ 4) `lci> REPLACE lineNumber newCode` _rewrite "lineNumber" w/ "newCode"_
  5) `lci> INSERT lineNumber newCode` _insert "newCode" **PRIOR** "lineNumber"_
 #### REPL DEFAULT LIBRARY:
  0) `lci> LOAD-LIB` _load lambdas from [JS_LambdaCalc_SampleExec.js](https://github.com/jrandleman/Lambda-Calc-Compiler/blob/master/JS-SampleExec/JS_LambdaCalc_SampleExec.js)_
+  1) `lci> LOAD-PRINT` _load printing `show` lambdas_
+  2) `lci> LOAD-CHURCH` _load church numeral lambdas_
 #### REPL CODING:
- 0) `lci> @JS your_JS_expr` _to run "your_JS_expr" as JavaScript,_
- 1) `lci> your_LC_expr` _to inertpret & run your Lambda Calculus!_
+ 0) `lci> @JS your_JS_expr` _run "your_JS_expr" as JavaScript_
+ 1) `lci> your_LC_expr` _interpret & run your Lambda Calculus!_
 ----------------------------------------------------------------------------
 ## Lambda Calculus REPL Notation & Information:
 ### RESERVED CHARS: 
  0) _WHITESPACE + `. \ ( ) @`_
  
 ### NAMING:
- 0) _ALL __LAMBDAS__ BEGIN W/ __CAPITAL LETTER__ & ONLY USE __ALPHANUMERICS__ + `_`_
- 1) _ALL __DATA__ (ARGS W/IN FCNS) ARE A __SINGLE LOWERCASE LETTER___
+ 0) ___LAMBDAS__ START W/ __CAPITAL LETTER__ & ONLY HAVE __ALPHANUMERICS__ + `_`_
+ 1) ___DATA__ (ARGS IN LAMBDAS) ARE A __SINGLE LOWERCASE LETTER___
  
 ### LAMBDA STRUCTURE:
  0) `LambdaName := \<args>.<returned operation>`
- 1) _ALL LAMBDAS ARE __IMMUTABLE___
- 2) _ALL LAMBDAS __CURRY__ ARGS_
- 3) _ALL LAMBDAS __RETURNS THEIR BODY___
+ 1) ___IMMUTABLE___
+ 2) ___CURRY ARGS___
+ 3) ___RETURN THEIR BODY___
  
 ### EMBEDDING JS:
 0) _SWAP BTWN "__LAMBDA CALCULUS__" & "__JAVASCRIPT__" SCOPES VIA TAGS:_
