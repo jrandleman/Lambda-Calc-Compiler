@@ -113,6 +113,10 @@ const Cdr = (Pop);
 const Cadr = (B)(Car)(Cdr);
 const Caddr = (B)(Car)((Twice)(Cdr));
 const Cadddr = (B)(Car)((Thrice)(Cdr));
+const InsertPhi = (n)=>(e)=>(l)=>(p)=>(V)((B)(Pred)(Fst)(p))(((Eq)((Fst)(p))(n))((Push)((B)(Nth)(Fst)(p)(l))((Push)(e)((Snd)(p))))((Push)((B)(Nth)(Fst)(p)(l))((Snd)(p))));
+const Insert = (n)=>(e)=>(l)=>(Is0)(n)((Push)(e)(l))((Gt)(n)((Length)(l))((Backward)((Push)(e))(l))((Snd)((Length)(l)((InsertPhi)(n)(e)(l))((V)((Length)(l))((ListN)(Zero))))));
+const ErasePhi = (n)=>(l)=>(p)=>(V)((B)(Pred)(Fst)(p))(((Eq)((Fst)(p))(n))((Snd)(p))((Push)((B)(Nth)(Fst)(p)(l))((Snd)(p))));
+const Erase = (n)=>(l)=>(Is0)((Length)(l))((ListN)(Zero))((Or)((Is0)(n))((Gt)(n)((Length)(l)))(l)((Snd)((Length)(l)((ErasePhi)(n)(l))((V)((Length)(l))((ListN)(Zero))))));
 
 // -:- IMPURE -:- Applies 'f' to 'n'th fcn in list 'l', PERFORMING A SIDE EFFECT
 const IMPURE_VoidMapPhi = l => f => n => {
@@ -290,6 +294,11 @@ print("  => Head(Push(Oxf)(List2)):        ");
 nshow(Head(Push(Oxf)(List2)));
 print("  => Length(Pop(Push(Oxf)(List2))): ");
 nshow(Length(Pop(Push(Oxf)(List2))));
+print("  => Erase(Ox3)(List1)       = ");
+VoidMap(nprint)(Erase(Ox3)(List1));
+print("\n  => Insert(Ox3)(Oxc)(List1) = ");
+VoidMap(nprint)(Insert(Ox3)(Oxc)(List1));
+show("");
 
 show("\nFILTER/MAP/VOIDMAP:");
 show("  => We have defined more 2 lists:");
@@ -356,7 +365,5 @@ print("  => caddr(List1)  = ");
 nshow(Caddr(List1));
 print("  => cadddr(List1) = ");
 nshow(Cadddr(List1));
-
-
 
 show("\nBye!\n");
