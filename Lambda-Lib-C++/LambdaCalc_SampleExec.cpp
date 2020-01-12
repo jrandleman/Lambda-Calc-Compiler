@@ -336,7 +336,7 @@ int main() {
   nshow(Head(Push(oxf)(List2)));
   print("  => Length(Pop(Push(oxf)(List2))): ");
   nshow(Length(Pop(Push(oxf)(List2))));
-  print("  => Erase(ox3)(List1) = ");
+  print("  => Erase(ox3)(List1)       = ");
   VoidMap(nprint)(Erase(ox3)(List1));
   print("\n  => Insert(ox3)(oxc)(List1) = ");
   VoidMap(nprint)(Insert(ox3)(oxc)(List1));
