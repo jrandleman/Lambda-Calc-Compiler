@@ -5,7 +5,7 @@
 //         (1) WHITESPACE &: .\()@
 //   (II) NAMING:
 //          (1) ALL LAMBDAS BEGIN WITH A CAPITAL LETTER & ONLY CONSIST OF ALPHANUMERICS + '_'
-//          (2) ALL DATA (ARGS W/IN FCNS) ARE A SINGLE LOWERCASE LETTER
+//          (2) ALL DATA (ARGS IN LAMBDAS) ARE A SINGLE LOWERCASE LETTER
 //   (III) LAMBDA STRUCTURE:
 //           (1) LambdaName := \<args>.<returned operation>
 //           (2) ALL LAMBDAS ARE IMMUTABLE
@@ -162,6 +162,12 @@ Cadr := B Car Cdr
 Caddr := B Car(Twice Cdr)
 Cadddr := B Car(Thrice Cdr)
 
+InsertPhi := \\nelp.V (B Pred Fst p) ((Eq(Fst p)n) (Push (B Nth Fst p l) (Push e(Snd p))) (Push (B Nth Fst p l) (Snd p)))
+Insert := \\nel.Is0 n (Push e l) (Gt n (Length l) (Backward(Push e)l) (Snd(Length l (InsertPhi n e l)(V(Length l)(ListN Zero)))))
+
+ErasePhi := \\nlp.V(B Pred Fst p)((Eq(Fst p)n) (Snd p) (Push(B Nth Fst p l)(Snd p)))
+Erase := \\nl.Is0(Length l) (ListN Zero) (Or(Is0 n)(Gt n(Length l)) l (Snd(Length l (ErasePhi n l) (V(Length l)(ListN Zero)))))
+
 @JS
 // -:- IMPURE -:- Applies 'f' to 'n'th fcn in list 'l', PERFORMING A SIDE EFFECT
 const IMPURE_VoidMapPhi = l => f => n => {
@@ -172,6 +178,10 @@ const IMPURE_VoidMapPhi = l => f => n => {
 const VoidMap = f => l => { Length(l)(IMPURE_VoidMapPhi(l)(f))(Once); };
 @LC
 `;
+
+var lib_loaded = false;
+var print_loaded = false;
+var church_loaded = false;
 
 const fs = require('fs');
 const readline = require('readline');
@@ -249,25 +259,50 @@ const showHistory = replBuff => {
 // Displays REPL's commands upon being invoked by "HELP" REPL command
 const showReplHelpMessage = () => {
   printLn("lci> \x1b[1mREPL COMMANDS (case-insensitive):\x1b[0m");
-  printLn("      (0) 'lci> EXIT' to exit,");
-  printLn("      (1) 'lci> HELP' for this message");
+  printLn("      (0) 'lci> EXIT'        exit REPL");
+  printLn("      (1) 'lci> SYNTAX-HELP' show Lambda Calculus syntax guide");
+  printLn("      (2) 'lci> HELP'        show this message");
   printLn("lci> \x1b[1mREPL FILE COMPILATION & LOADING:\x1b[0m");
-  printLn("      (0) 'lci> LCC filename' compile + exit,");
-  printLn("      (1) 'lci> LCI filename' interpret/evaluate + exit,");
-  printLn("      (2) 'lci> COMPILE filename' compile,");
-  printLn("      (3) 'lci> LOAD filename' load into REPL's history buffer");
+  printLn("      (0) 'lci> LCC filename'     compile + exit");
+  printLn("      (1) 'lci> LCI filename'     interpret/evaluate + exit");
+  printLn("      (2) 'lci> COMPILE filename' compile");
+  printLn("      (3) 'lci> LOAD filename'    load into REPL's history buffer");
   printLn("lci> \x1b[1mREPL HISTORY MANIPULATION:\x1b[0m");
-  printLn("      (0) 'lci> SHOW-HISTORY' print REPL history,");
-  printLn("      (1) 'lci> SAVE-HISTORY filename' save REPL history to \"filename\",");
-  printLn("      (2) 'lci> CLEAR-HISTORY' clear REPL history,");
-  printLn("      (3) 'lci> DELETE lineNumber' delete code at \"lineNumber\",");
-  printLn("      (4) 'lci> REPLACE lineNumber newCode' rewrite \"lineNumber\" w/ \"newCode\",");
-  printLn("      (5) 'lci> INSERT lineNumber newCode' insert \"newCode\" \x1b[1mPRIOR\x1b[0m \"lineNumber\"");
+  printLn("      (0) 'lci> SHOW-HISTORY'               print REPL history");
+  printLn("      (1) 'lci> SAVE-HISTORY filename'      save REPL history to \"filename\"");
+  printLn("      (2) 'lci> CLEAR-HISTORY'              clear REPL history");
+  printLn("      (3) 'lci> DELETE lineNumber'          delete code at \"lineNumber\"");
+  printLn("      (4) 'lci> REPLACE lineNumber newCode' rewrite \"lineNumber\" w/ \"newCode\"");
+  printLn("      (5) 'lci> INSERT lineNumber newCode'  insert \"newCode\" \x1b[1mPRIOR\x1b[0m \"lineNumber\"");
   printLn("lci> \x1b[1mREPL DEFAULT LIBRARY:\x1b[0m");
-  printLn("      (0) 'lci> LOAD-LIB' load lambdas from \"JS_LambdaCalc_SampleExec.js\"");
+  printLn("      (0) 'lci> LOAD-LIB'    load lambdas from \"JS_LambdaCalc_SampleExec.js\"");
+  printLn("      (1) 'lci> LOAD-PRINT'  printing \"show\" fcns from \"JS_LambdaCalc_SampleExec.js\"");
+  printLn("      (2) 'lci> LOAD-CHURCH' load church numerals from \"JS_LambdaCalc_SampleExec.js\"");
   printLn("lci> \x1b[1mREPL CODING:\x1b[0m");
-  printLn("      (0) 'lci> @JS your_JS_expr' to run \"your_JS_expr\" as JavaScript,");
-  printLn("      (1) 'lci> your_LC_expr' to inertpret & run your Lambda Calculus!"); 
+  printLn("      (0) 'lci> @JS your_JS_expr' run \"your_JS_expr\" as JavaScript");
+  printLn("      (1) 'lci> your_LC_expr'     interpret & run your Lambda Calculus!"); 
+}
+
+// Displays Lambda Calculus Syntax Guide
+const showSyntaxHelpMessage = () => {
+  printLn("lci> \x1b[1mREPL LAMBDA CALCULUS SYNTAX:\x1b[0m");
+  printLn("     \x1b[1m(I)   RESERVED CHARS:\x1b[0m");
+  printLn("            (0) WHITESPACE &: .\\()@");
+  printLn("     \x1b[1m(II)  NAMING:\x1b[0m");
+  printLn("            (0) LAMBDAS START W/ CAPITAL LETTER & ONLY HAVE ALPHANUMERICS + '_'");
+  printLn("            (1) DATA (ARGS IN LAMBDAS) ARE A SINGLE LOWERCASE LETTER");
+  printLn("     \x1b[1m(III) LAMBDA STRUCTURE:\x1b[0m");
+  printLn("            (0) LambdaName := \\<args>.<returned operation>");
+  printLn("            (1) IMMUTABLE");
+  printLn("            (2) CURRY ARGS");
+  printLn("            (3) RETURN THEIR BODY");
+  printLn("     \x1b[1m(IV)  EMBEDDING JS IN A COMPILED/INTERPRETED FILE:\x1b[0m");
+  printLn("            (0) SWAP BTWN \"LAMBDA CALCULUS\" & \"JAVASCRIPT\" SCOPES VIA TAGS:");
+  printLn("                => '@JS' = ALL FOLLOWING CODE IS JAVASCRIPT TO BE LEFT AS IS");
+  printLn("                => '@LC' = ALL FOLLOWING CODE IS LAMBDA CALC TO BE CONVERTED");
+  printLn("                => IE: @JS");
+  printLn("                         .. your JS here ..");
+  printLn("                       @LC");
 }
 
 // Displays an error if given an invalid line # for the REPL history buffer,
@@ -293,7 +328,7 @@ const deleteLine = (lineNo, replBuff) => {
     if(!validReplLineNo(lineNo, replBuff)) return replBuff;
     let bufferLines = ('\n'+replBuff.trim()).split('\n');
     bufferLines.splice(lineNo,1); // rm line specified
-    replBuff = bufferLines.join('\n');
+    replBuff = bufferLines.join('\n')+'\n';
     printLn("lci> \x1b[1mLine " + lineNo + " Deleted!\x1b[0m");
   }
   return replBuff;
@@ -307,8 +342,8 @@ const replaceLine = (lineNo, newCode, replBuff) => {
   } else {
     if(!validReplLineNo(lineNo, replBuff)) return replBuff;
     let bufferLines = ('\n'+replBuff.trim()).split('\n');
-    bufferLines[lineNo] = newCode; // replace line specified
-    replBuff = bufferLines.join('\n');
+    bufferLines[lineNo] = executeInterpreter(newCode); // replace line specified
+    replBuff = bufferLines.join('\n')+'\n';
     printLn("lci> \x1b[1mLine " + lineNo + " Replaced!\x1b[0m");
   }
   return replBuff;
@@ -322,8 +357,8 @@ const insertLine = (lineNo, newCode, replBuff) => {
   } else {
     if(!validReplLineNo(lineNo, replBuff,1)) return replBuff;
     let bufferLines = ('\n'+replBuff.trim()).split('\n');
-    bufferLines.splice(lineNo, 0, newCode); // insert line specified
-    replBuff = bufferLines.join('\n');
+    bufferLines.splice(lineNo, 0, executeInterpreter(newCode)); // insert line specified
+    replBuff = bufferLines.join('\n')+'\n';
     printLn("lci> \x1b[1mLine " + lineNo + " Inserted!\x1b[0m");
   }
   return replBuff;
@@ -359,15 +394,16 @@ repl.prompt();
 // Once '\n' registered
 repl.on('line', line => { 
 
-  // if commanded to exit, help, or show REPL history
+  // CMD = EXIT | HELP | SYNTAX-HELP | SHOW-HISTORY
   const possible_command = line.toUpperCase().trim();
   switch(possible_command) {
     case "EXIT": repl.close(); // launch close method
     case "HELP": showReplHelpMessage(); repl.prompt(); return;
+    case "SYNTAX-HELP": showSyntaxHelpMessage(); repl.prompt(); return;
     case "SHOW-HISTORY": showHistory(replBuffer); repl.prompt(); return;
   }
 
-  // if commanded to save REPL history
+  // CMD = SAVE-HISTORY
   if(isCommand(possible_command, "SAVE-HISTORY")) {
     if(replBuffer.length === 0) {
       printLn("lci> \x1b[1m\x1b[38;5;226mNO REPL HISTORY!\x1b[0m");
@@ -382,21 +418,22 @@ repl.on('line', line => {
     repl.prompt(); return;
   }
 
-  // if commanded to clear REPL history
+  // CMD = CLEAR-HISTORY
   if(isCommand(possible_command, "CLEAR-HISTORY")) {
+    lib_loaded = print_loaded = church_loaded = false;
     replBuffer = [];
     printLn('lci> \x1b[1mHistory Cleared!\x1b[0m');
     repl.prompt(); return;
   }
 
-  // if commanded to delete a line in REPL history buffer
+  // CMD = DELETE LINE
   if(isCommand(possible_command,"DELETE ")) {
     const lineNumber = parseInt(line.replace(/[D|d][E|e][L|l][E|e][T|t][E|e] /, '').trim(), 10);
     replBuffer = deleteLine(lineNumber,replBuffer);
     repl.prompt(); return;
   }
 
-  // if commanded to delete a line in REPL history buffer
+  // CMD = REPLACE LINE
   if(isCommand(possible_command,"REPLACE ")) {
     const lineNumber = parseInt(line.replace(/[R|r][E|e][P|p][L|l][A|a][C|c][E|e] /, '').trim(), 10);
     let newCodeLines = line.replace(/[R|r][E|e][P|p][L|l][A|a][C|c][E|e] /, '').trim().split(' ');
@@ -405,7 +442,7 @@ repl.on('line', line => {
     repl.prompt(); return;
   }
 
-  // if commanded to insert BEFORE a line in REPL history buffer
+  // CMD = INSERT __BEFORE__ LINE
   if(isCommand(possible_command,"INSERT ")) {
     const lineNumber = parseInt(line.replace(/[I|i][N|n][S|s][E|e][R|r][T|t] /, '').trim(), 10);
     let newCodeLines = line.replace(/[I|i][N|n][S|s][E|e][R|r][T|t] /, '').trim().split(' ');
@@ -414,7 +451,7 @@ repl.on('line', line => {
     repl.prompt(); return;
   }
 
-  // if commanded to compile a file
+  // CMD = COMPILE FILE
   if(isCommand(possible_command,"LCC ") || isCommand(possible_command,"COMPILE ")) {
     const filename = (isCommand(possible_command,"COMPILE ")) ? 
                       line.replace(/[C|c][O|o][M|m][P|p][I|i][L|l][E|e] /, '').trim() : 
@@ -431,7 +468,7 @@ repl.on('line', line => {
     repl.prompt(); return;
   }
 
-  // if commanded to interpret a file
+  // CMD = INTERPRET FILE
   if(isCommand(possible_command,"LCI ") || isCommand(possible_command,"LOAD ")) {
     const filename = isCommand(possible_command,"LOAD ") ? 
                       line.replace(/[L|l][O|o][A|a][D|d] /, '').trim() : 
@@ -449,12 +486,38 @@ repl.on('line', line => {
     repl.prompt(); return;
   }
 
-  // if commanded to import premade lambda-calc library
+  // CMD = LOAD-LIB(rary)
   if(isCommand(possible_command,"LOAD-LIB")) {
-    replBuffer += executeInterpreter(LCC_LIBRARY) + '\n';
+    lib_loaded = true;
+    let loadable_lib = LCC_LIBRARY;
+    if(print_loaded) 
+      loadable_lib = loadable_lib.slice(0,LCC_LIBRARY.indexOf('Ox0')) + 
+                     loadable_lib.slice(LCC_LIBRARY.indexOf('Oxe fa')+7);
+    if(church_loaded)
+      loadable_lib = loadable_lib.slice(LCC_LIBRARY.indexOf('@LC') + 3);
+    replBuffer += executeInterpreter(loadable_lib) + '\n';
     printLn("lci> \x1b[1mLibrary Loaded!\x1b[0m");
     repl.prompt(); return;
   }
+
+  // CMD = LOAD-PRINT(ing fcns)
+  if(isCommand(possible_command,"LOAD-PRINT")) {
+    if(lib_loaded) {repl.prompt(); return;} // lib encapsulates printing fcns
+    print_loaded = true;
+    replBuffer += executeInterpreter(LCC_LIBRARY.slice(0,LCC_LIBRARY.indexOf('@LC') + 3)) + '\n';
+    printLn("lci> \x1b[1mPrinting Lambdas Loaded!\x1b[0m");
+    repl.prompt(); return;
+  }
+
+  // CMD = LOAD-CHURCH( numerals)
+  if(isCommand(possible_command,"LOAD-CHURCH")) {
+    if(lib_loaded) {repl.prompt(); return;} // lib encapsulates church numeral lambdas
+    church_loaded = true; 
+    replBuffer += executeInterpreter(LCC_LIBRARY.slice(LCC_LIBRARY.indexOf('Ox0'),LCC_LIBRARY.indexOf('Oxe fa') + 7)) + '\n';
+    printLn("lci> \x1b[1mChurch Numerals Loaded!\x1b[0m");
+    repl.prompt(); return;
+  }
+
 
   // try evaluating input
   lineBuffer = line.toUpperCase().includes('@JS') 
@@ -473,6 +536,6 @@ repl.on('line', line => {
   }
 
 }).on('close', () => { // exit the program successfully on 'close' method
-  printLn("lci> \x1b[1mBluebird Id!\x1b[0m"); // B(I)
+  printLn("lci> \x1b[1mBluebird Id!\x1b[0m"); // B(I)!
   process.exit(0);
 });
