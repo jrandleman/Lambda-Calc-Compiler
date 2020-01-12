@@ -144,6 +144,12 @@ Cadr := B Car Cdr
 Caddr := B Car(Twice Cdr)
 Cadddr := B Car(Thrice Cdr)
 
+InsertPhi := \nelp.V (B Pred Fst p) ((Eq(Fst p)n) (Push (B Nth Fst p l) (Push e(Snd p))) (Push (B Nth Fst p l) (Snd p)))
+Insert := \nel.Is0 n (Push e l) (Gt n (Length l) (Backward(Push e)l) (Snd(Length l (InsertPhi n e l)(V(Length l)(ListN Zero)))))
+
+ErasePhi := \nlp.V(B Pred Fst p)((Eq(Fst p)n) (Snd p) (Push(B Nth Fst p l)(Snd p)))
+Erase := \nl.Is0(Length l) (ListN Zero) (Or(Is0 n)(Gt n(Length l)) l (Snd(Length l (ErasePhi n l) (V(Length l)(ListN Zero)))))
+
 @JS
 // -:- IMPURE -:- Applies 'f' to 'n'th fcn in list 'l', PERFORMING A SIDE EFFECT
 const IMPURE_VoidMapPhi = l => f => n => {
@@ -331,6 +337,11 @@ print("  => Head(Push(Oxf)(List2)):        ");
 nshow(Head(Push(Oxf)(List2)));
 print("  => Length(Pop(Push(Oxf)(List2))): ");
 nshow(Length(Pop(Push(Oxf)(List2))));
+print("  => Erase(Ox3)(List1)       = ");
+VoidMap(nprint)(Erase(Ox3)(List1));
+print("\n  => Insert(Ox3)(Oxc)(List1) = ");
+VoidMap(nprint)(Insert(Ox3)(Oxc)(List1));
+show("");
 
 show("\nFILTER/MAP/VOIDMAP:");
 show("  => We have defined more 2 lists:");
@@ -397,7 +408,5 @@ print("  => caddr(List1)  = ");
 nshow(Caddr(List1));
 print("  => cadddr(List1) = ");
 nshow(Cadddr(List1));
-
-
 
 show("\nBye!\n");
