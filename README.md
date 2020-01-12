@@ -136,8 +136,8 @@
  ----------------------------------------------------------------------------
 ### LIST (PURELY-FUNCTIONAL!) DATA STRUCTURE FCNS:
 
-#### CONTAINMENT
-* _Lists can contain __ANY__ fcn, including Church Numerals & __even other Lists!___
+#### CONTAINMENT:
+* _Lists can contain __ANYTHING:__ including integers, Church Numerals, & __even other Lists!___
  
  #### CONSTRUCTION (Given List Size):
 * `ListN(N) (N1) (N2) (N3) (NN)` => _Returns List size N of the trailing elts_
