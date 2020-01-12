@@ -426,6 +426,17 @@ int main() {
   nshow(caaddr(SuperList1));
   print("     -> caadr(SuperList1)  = ");
   nshow(caadr(SuperList1));
+  
+  show("\nLIST OF MULTIPLE-TYPED ELTS:");
+  show("  => We have defined a list w/ a float, String, & Church Numeral:");
+  show("     (0) multi_type_list = ListN(ox3) (3.14159) (\"Talk about dynamic!\") (oxd);");
+  const auto multi_type_list = ListN(ox3) (3.14159) ("Talk about dynamic!") (oxd);
+  print("\n  => car(multi_type_list)   = ");
+  show(car(multi_type_list));
+  print("  => cadr(multi_type_list)  = ");
+  show(cadr(multi_type_list));
+  print("  => caddr(multi_type_list) = ");
+  nshow(caddr(multi_type_list));
 
 
 
