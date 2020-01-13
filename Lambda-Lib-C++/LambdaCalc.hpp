@@ -80,6 +80,8 @@
  *   => Sub  (N1)(N2) => N1 - N2
  *   => Mult (N1)(N2) => N1 * N2
  *   => Pow  (N1)(N2) => N1 ** N2
+ *   => Div  (N1)(N2) => N1 / N2
+ *   => Log  (N1)(N2) => log N1 (N2)
  *
  *   => Succ (N) => Succesor of N,    N+1
  *   => Pred (N) => Predecessor of N, N-1
@@ -338,6 +340,60 @@ namespace LambdaCalc {
    *  /\\  ||     |/===\| ||    ||        ||=    )X(  ||==// ||    ||  || ||_// ||=   
    * // \\ \\===) ||   || \===/ \\===)    \|==/ // \\ ||     \===/ \\==// || \\ \|==/
   **********************************************************************************/
+
+  /******************************************************************************
+  * INTEGER DIVISION FOR 2 CHURCH NUMERALS: Div a b == a / b
+  ******************************************************************************/
+
+  // Handling Undefined Behavior: We define Div a 0 = 0
+
+  // DivPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Add(Snd p)b))
+  const auto DivPhi = [](const auto a){return [=](const auto b){return [=](const auto p){
+    return Geq(Snd(p))(a) (p) (V(Succ(Fst(p)))(Add(Snd(p))(b)));
+  };};};
+
+  // DivIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(DivPhi a b)(V Zero Zero)))
+  const auto DivIter = [](const auto a){return [=](const auto b){
+    return Or(Lt(a)(b))(Is0(b)) (Zero) (Fst(a(DivPhi(a)(b))(V(Zero)(Zero))));
+  };};
+
+  // DivRes := \abn.Gt(Mult b n)a(Pred n)n
+  const auto DivRes = [](const auto a){return [=](const auto b){return [=](const auto n){
+    return Gt(Mult(b)(n))(a) (Pred(n)) (n);
+  };};};
+
+  // Div := \ab.DivRes a b (DivIter a b)
+  const auto Div = [](const auto a){return [=](const auto b){
+    return DivRes(a)(b)(DivIter(a)(b));
+  };};
+
+  /******************************************************************************
+  * INTEGER LOGARITHM FOR 2 CHURCH NUMERALS: Log a b == Log a (b) => (a = base)
+  ******************************************************************************/
+
+  // Handling Undefined Behavior: We define Log 0 b = 0 && Log 1 b = 1
+
+  // LogPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Mult(Snd p)b))
+  const auto LogPhi = [](const auto a){return [=](const auto b){return [=](const auto p){
+    return Geq(Snd(p))(a) (p) (V(Succ(Fst(p)))(Mult(Snd(p))(b)));
+  };};};
+
+  // LogIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(LogPhi a b)(V Zero Once)))
+  const auto LogIter = [](const auto a){return [=](const auto b){
+    return Or(Lt(a)(b))(Is0(b)) (Zero) (Fst(a(LogPhi(a)(b))(V(Zero)(Once))));
+  };};
+
+  // LogRes := \abn.Gt(Pow b n)a(Pred n)n
+  const auto LogRes = [](const auto a){return [=](const auto b){return [=](const auto n){
+    return Gt(Pow(b)(n))(a) (Pred(n)) (n);
+  };};};
+
+  // Log := \ab.Is0(Pred a) a (LogRes b a (LogIter b a))
+  const auto Log = [](const auto a){return [=](const auto b){
+    return Is0(Pred(a))
+            (a)
+            (LogRes(b)(a)(LogIter(b)(a)));
+  };};
 
   /******************************************************************************
   * "IS-FACTOR" FCNAL BOOLEAN EXPRESSION FOR 2 CHURCH NUMERALS
