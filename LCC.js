@@ -266,7 +266,7 @@ const showReplHelpMessage = () => {
   printLn("      (0) 'lci> LCC filename'     compile + exit");
   printLn("      (1) 'lci> LCI filename'     interpret/evaluate + exit");
   printLn("      (2) 'lci> COMPILE filename' compile");
-  printLn("      (3) 'lci> LOAD filename'    load into REPL's history buffer");
+  printLn("      (3) 'lci> LOAD filename'    interpret & load into REPL's history buffer");
   printLn("lci> \x1b[1mREPL HISTORY MANIPULATION:\x1b[0m");
   printLn("      (0) 'lci> SHOW-HISTORY'               print REPL history");
   printLn("      (1) 'lci> SAVE-HISTORY filename'      save REPL history to \"filename\"");
