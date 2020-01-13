@@ -15,7 +15,7 @@
  0) `lci> LCC filename` _compile + exit_
  1) `lci> LCI filename` _interpret/evaluate + exit_
  2) `lci> COMPILE filename` _compile_
- 3) `lci> LOAD filename` _load into REPL's history buffer_
+ 3) `lci> LOAD filename` _interpret & load into REPL's history buffer_
 #### REPL HISTORY MANIPULATION:
  0) `lci> SHOW-HISTORY` _print REPL history_
  1) `lci> SAVE-HISTORY filename` _save REPL history to "filename"_
