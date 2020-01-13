@@ -125,6 +125,8 @@
 * `Sub  (N1)(N2)` => _N1 - N2_
 * `Mult (N1)(N2)` => _N1 * N2_
 * `Pow  (N1)(N2)` => _N1 ** N2_
+* `Div  (N1)(N2)` => _N1 / N2_
+* `Log  (N1)(N2)` => _log N1 (N2)_
 
 * `Succ (N)` => _Succesor of N,    N+1_
 * `Pred (N)` => _Predecessor of N, N-1_
