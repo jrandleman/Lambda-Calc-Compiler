@@ -78,6 +78,18 @@ Lt := \nk.Not(Geq nk)
 
 
 
+DivPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Add(Snd p)b))
+DivIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(DivPhi a b)(V Zero Zero)))
+DivRes := \abn.Gt(Mult b n)a(Pred n)n
+Div := \ab.DivRes a b (DivIter a b)
+
+LogPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Mult(Snd p)b))
+LogIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(LogPhi a b)(V Zero Once)))
+LogRes := \abn.Gt(Pow b n)a(Pred n)n
+Log := \ab.Is0(Pred a) a (LogRes b a (LogIter b a))
+
+
+
 IsFactorPhi := \mp.V (Eq(B Succ Fst p)m Zero (B Succ Fst p)) (Eq(B Succ Fst p)m)
 IsFactor := \mn.Is0 m False (Is0 n True (B Is0 Pred m True (Gt mn False (Eq mn True (Snd (n (IsFactorPhi m) (V Zero True)))))))
 
@@ -255,14 +267,18 @@ print("  => Oddp(Ox9):  ");
 bshow(Oddp(Ox9));
 
 show("");
-print("  => Add(Oxf)(Oxa):  ");
+print("  => Add(Oxf)(Oxa):            ");
 nshow(Add(Oxf)(Oxa));
-print("  => Sub(Oxb)(Ox6):  ");
+print("  => Sub(Oxb)(Ox6):            ");
 nshow(Sub(Oxb)(Ox6));
-print("  => Mult(Ox3)(Ox7): ");
+print("  => Mult(Ox3)(Ox7):           ");
 nshow(Mult(Ox3)(Ox7));
-print("  => Pow(Ox2)(Ox5):  ");
+print("  => Pow(Ox2)(Ox5):            ");
 nshow(Pow(Ox2)(Ox5));
+print("  => Div(Mult(Ox2)(Oxa))(Ox4): ");
+nshow(Div(Mult(Ox2)(Oxa))(Ox4));
+print("  => Log(Ox2)(Ox8):            ");
+nshow(Log(Ox2)(Ox8));
 
 show("");
 print("  => Succ(Ox8): ");
