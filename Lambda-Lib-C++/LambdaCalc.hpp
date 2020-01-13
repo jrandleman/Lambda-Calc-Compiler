@@ -779,7 +779,7 @@ namespace LambdaCalc {
   };};
 
   /******************************************************************************
-  * CHURCHILL NUMERALS A LA HEX (ox0-ox5 == Zero-Fivefold)
+  * CHURCH NUMERALS A LA HEX (ox0-ox5 == Zero-Fivefold)
   ******************************************************************************/
   
   const auto ox0 = False; // \fa.a  -- Zero Compositions
