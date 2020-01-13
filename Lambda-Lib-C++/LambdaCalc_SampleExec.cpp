@@ -79,6 +79,8 @@
  *   => Sub  (N1)(N2) => N1 - N2
  *   => Mult (N1)(N2) => N1 * N2
  *   => Pow  (N1)(N2) => N1 ** N2
+ *   => Div  (N1)(N2) => N1 / N2
+ *   => Log  (N1)(N2) => log N1 (N2)
  *
  *   => Succ (N) => Succesor of N,    N+1
  *   => Pred (N) => Predecessor of N, N-1
@@ -254,14 +256,18 @@ int main() {
   bshow(Oddp(ox9));
 
   show("");
-  print("  => Add(oxf)(oxa):  ");
+  print("  => Add(oxf)(oxa):            ");
   nshow(Add(oxf)(oxa));
-  print("  => Sub(oxb)(ox6):  ");
+  print("  => Sub(oxb)(ox6):            ");
   nshow(Sub(oxb)(ox6));
-  print("  => Mult(ox3)(ox7): ");
+  print("  => Mult(ox3)(ox7):           ");
   nshow(Mult(ox3)(ox7));
-  print("  => Pow(ox2)(ox5):  ");
+  print("  => Pow(ox2)(ox5):            ");
   nshow(Pow(ox2)(ox5));
+  print("  => Div(Mult(ox2)(oxa))(ox4): ");
+  nshow(Div(Mult(ox2)(oxa))(ox4));
+  print("  => Log(ox2)(ox8):            ");
+  nshow(Log(ox2)(ox8));
 
   show("");
   print("  => Succ(ox8): ");
@@ -426,7 +432,7 @@ int main() {
   nshow(caaddr(SuperList1));
   print("     -> caadr(SuperList1)  = ");
   nshow(caadr(SuperList1));
-  
+
   show("\nLIST OF MULTIPLE-TYPED ELTS:");
   show("  => We have defined a list w/ a float, String, & Church Numeral:");
   show("     (0) multi_type_list = ListN(ox3) (3.14159) (\"Talk about dynamic!\") (oxd);");
