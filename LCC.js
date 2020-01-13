@@ -95,6 +95,18 @@ Lt := \\nk.Not(Geq nk)
 
 
 
+DivPhi := \\abp.Geq(Snd p)a p (V(B Succ Fst p)(Add(Snd p)b))
+DivIter := \\ab.Or(Lt a b)(Is0 b) Zero (Fst(a(DivPhi a b)(V Zero Zero)))
+DivRes := \\abn.Gt(Mult b n)a(Pred n)n
+Div := \\ab.DivRes a b (DivIter a b)
+
+LogPhi := \\abp.Geq(Snd p)a p (V(B Succ Fst p)(Mult(Snd p)b))
+LogIter := \\ab.Or(Lt a b)(Is0 b) Zero (Fst(a(LogPhi a b)(V Zero Once)))
+LogRes := \\abn.Gt(Pow b n)a(Pred n)n
+Log := \\ab.Is0(Pred a) a (LogRes b a (LogIter b a))
+
+
+
 IsFactorPhi := \\mp.V (Eq(B Succ Fst p)m Zero (B Succ Fst p)) (Eq(B Succ Fst p)m)
 IsFactor := \\mn.Is0 m False (Is0 n True (B Is0 Pred m True (Gt mn False (Eq mn True (Snd (n (IsFactorPhi m) (V Zero True)))))))
 
