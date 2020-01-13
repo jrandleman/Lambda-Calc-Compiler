@@ -204,5 +204,5 @@
 
 * *Second/False/Zero, Kite*:       `KI := \ab.b        = K I = C K`
 * *Binary Compose,    Blackbird*:  `B1 := \fgab.f(gab) = B B B`
-* *Hold An Arg,       Thrush*:     `Th := \af.fa       = C I`
-* *Hold Arg Pair,     Vireo*:      `V  := \abf.fab     = B C Th = B C (C I)`
+* *Singleton/HoldArg, Thrush*:     `Th := \af.fa       = C I`
+* *Tuple/HoldArgPair, Vireo*:      `V  := \abf.fab     = B C Th = B C (C I)`
