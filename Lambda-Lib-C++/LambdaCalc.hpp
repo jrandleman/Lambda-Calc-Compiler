@@ -5,6 +5,7 @@
 #define LAMBDA_CALC_HPP_
 #include <iostream>
 
+
 /**
  * -:- NAMESPACE LambdaCalc LAMBDAS -:-
  *     => ALL DATA IS IMMUTABLE (CONST)
@@ -174,24 +175,24 @@
 namespace LambdaCalc {
 
   // Lambdas for visualizing fcnal booleans:
-  const auto bshow = [](const auto f){
+  const auto bshow = [](const auto& f){
     std::cout<<std::boolalpha<<f(true)(false)<<std::endl;
   };
-  const auto bprint = [](const auto f){
+  const auto bprint = [](const auto& f){
     std::cout<<std::boolalpha<<f(true)(false) << " ";
   };
 
   // Lambdas for visualizing church numerals (more on this below!):
-  const auto nshow = [](const auto f){
+  const auto nshow = [](const auto& f){
     std::cout << f([=](const unsigned long long x){return x+1;})(0) << std::endl;
   };
-  const auto nprint = [](const auto f){
+  const auto nprint = [](const auto& f){
     std::cout << f([=](const unsigned long long x){return x+1;})(0) << " ";
   };
 
   // Lambda to show any data, w/ or w/o '\n'
-  const auto show = [](const auto data){std::cout << data << std::endl;};
-  const auto print = [](const auto data){std::cout << data;};
+  const auto show = [](const auto& data){std::cout << data << std::endl;};
+  const auto print = [](const auto& data){std::cout << data;};
 
   /********************************************************************************
    *  \\   //===)  //^\\  /|    //===)       //|    // (==\\  
@@ -200,19 +201,19 @@ namespace LambdaCalc {
   ********************************************************************************/
 
   // Idiot (IDENTITY/ID): I := \a.a
-  const auto I = [](const auto a){return a;};
+  const auto I = [](const auto& a){return a;};
 
   // Kestrel (FIRST/TRUE/CONST): K := \ab.a
-  const auto K = [](const auto a){return [=](const auto b){return a;};};
+  const auto K = [](const auto& a){return [=](const auto& b){return a;};};
 
   // Kite (SECOND/FALSE): KI := \ab.b
   const auto KI = K(I);
 
   // Mockingbird (SELF-APPLICATION): M := \f.ff
-  const auto M = [](const auto f){return f(f);};
+  const auto M = [](const auto& f){return f(f);};
 
   // Cardinal (FLIP): C := \fab.fba
-  const auto C = [](const auto f){return [=](const auto a){return [=](const auto b){
+  const auto C = [](const auto& f){return [=](const auto& a){return [=](const auto& b){
     return f(b)(a);
   };};};
 
@@ -227,16 +228,16 @@ namespace LambdaCalc {
   const auto Not = C;
 
   // Logical AND: And := \pq.pqF = \pq.pqp
-  const auto And = [](const auto p){return [=](const auto q){return p(q)(False);};};
+  const auto And = [](const auto& p){return [=](const auto& q){return p(q)(False);};};
 
   // Logical OR: Or := \pq.pTq = \pq.ppq = \pq.Mpq
-  const auto Or = [](const auto p){return [=](const auto q){return p(True)(q);};};
+  const auto Or = [](const auto& p){return [=](const auto& q){return p(True)(q);};};
 
   // Logical XOR: Xor := \pq.p(Not q)q
-  const auto Xor = [](const auto p){return [=](const auto q){return p(Not(q))(q);};};
+  const auto Xor = [](const auto& p){return [=](const auto& q){return p(Not(q))(q);};};
 
   // Boolean Equality, Logical XNOR: Beq := \pq.pq(Not q)
-  const auto Beq = [](const auto p){return [=](const auto q){return p(q)(Not(q));};};
+  const auto Beq = [](const auto& p){return [=](const auto& q){return p(q)(Not(q));};};
 
   /********************************************************************************
    *  \\   //===)  //^\\  /|    //===)       (==\\    // (==\\  
@@ -245,7 +246,7 @@ namespace LambdaCalc {
   ********************************************************************************/
 
   // Bluebird (UNARY COMPOSITION (.)): B := \fga.f(ga)
-  const auto B = [](const auto f){return [=](const auto g){return [=](const auto a){
+  const auto B = [](const auto& f){return [=](const auto& g){return [=](const auto& a){
     return f(g(a));
   };};};
 
@@ -263,16 +264,16 @@ namespace LambdaCalc {
   // Church Numerals (N-Fold Compositions of Fcns) => USED TO COUNT
   const auto Zero = False; // \fa.a  -- Zero Compositions
   const auto Once = I;     // \fa.fa -- Compose Once
-  const auto Twice = [](const auto f){return [=](const auto a){return f(f(a));};}; // \fa.f(fa)
-  const auto Thrice = [](const auto f){return [=](const auto a){return f(f(f(a)));};}; // \fa.f(f(fa))
-  const auto Fourfold = [](const auto f){return [=](const auto a){return f(f(f(f(a))));};}; // \fa.f(f(f(fa)))
-  const auto Fivefold = [](const auto f){return [=](const auto a){return f(f(f(f(f(a)))));};}; // \fa.f(f(f(f(fa))))
+  const auto Twice = [](const auto& f){return [=](const auto& a){return f(f(a));};}; // \fa.f(fa)
+  const auto Thrice = [](const auto& f){return [=](const auto& a){return f(f(f(a)));};}; // \fa.f(f(fa))
+  const auto Fourfold = [](const auto& f){return [=](const auto& a){return f(f(f(f(a))));};}; // \fa.f(f(f(fa)))
+  const auto Fivefold = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(a)))));};}; // \fa.f(f(f(f(fa))))
 
   // Succesor (+1): Succ := \nf.Bf(nf)
-  const auto Succ = [](const auto n){return [=](const auto f){return B(f)(n(f));};};
+  const auto Succ = [](const auto& n){return [=](const auto& f){return B(f)(n(f));};};
 
   // Addition (+k): Add := \nk.k Succ n
-  const auto Add = [](const auto n){return [=](const auto k){return k(Succ)(n);};};
+  const auto Add = [](const auto& n){return [=](const auto& k){return k(Succ)(n);};};
 
   // Multiplication (*k): Mult := \nk.B n k = B
   // THRICE (TWICE f) = THRICE (f . f) 
@@ -294,46 +295,46 @@ namespace LambdaCalc {
   const auto V = B(C)(Th);
 
   // First  (ACCESS 1ST FCN IN VIREO PAIR p): Fst := \p.p K
-  const auto Fst = [](const auto p){return p(K);};
+  const auto Fst = [](const auto& p){return p(K);};
 
   // Second (ACCESS 2nd FCN IN VIREO PAIR p): Snd := \p.p KI
-  const auto Snd = [](const auto p){return p(KI);};
+  const auto Snd = [](const auto& p){return p(KI);};
 
   // Phi (GIVEN VIREO PAIR p) (a,b)->(b,b+1): Phi := \p.V(Snd p)(Succ (Snd p))
   // GIVEN (m,n) RETURNS (n,n+1) => REGARDLESS OF 'm' VALUE!
   // THUS => (0,0) -> (0,1) [1st invocation]
   //      => (0,1) -> (1,2) [2nd invocation]
   //      => (m,n) -> (n,n+1) ["n+1"th invocation]
-  const auto Phi = [](const auto p){return V(Snd(p))(Succ(Snd(p)));};
+  const auto Phi = [](const auto& p){return V(Snd(p))(Succ(Snd(p)));};
 
   // Predecessor (-1): Pred := \n.Fst(n Phi (V Zero Zero))
   // HOW: counts from (0,0), storing the current# & next#, until next# = n, where current# is returned
-  const auto Pred = [](const auto n){return Fst(n(Phi)(V(Zero)(Zero)));};
+  const auto Pred = [](const auto& n){return Fst(n(Phi)(V(Zero)(Zero)));};
 
   // Subtraction (-k): Sub := \nk.k Pred n
   // => BEWARE OF DOING THIS GENERICALLY IN HASKELL: 
   //    HINDLEY-MILNER TYPE INFERENCE CAN'T HANDLE THE ABSTRACTION
   //    BEYOND SUBTRACTING MORE THAN "Once" FROM ANY OTHER NUMBER
-  const auto Sub = [](const auto n){return [=](const auto k){return k(Pred)(n);};};
+  const auto Sub = [](const auto& n){return [=](const auto& k){return k(Pred)(n);};};
 
   // Is0 (==0): Is0 := \n.n(K F)T
   //   => "Constant" False _ONLY_ Applied if n > Zero !
-  const auto Is0 = [](const auto n){return n(K(False))(True);};
+  const auto Is0 = [](const auto& n){return n(K(False))(True);};
 
   // Less Than Or Equal (<=): Leq := \nk.B1 Is0 Sub n k
-  const auto Leq = [](const auto n){return [=](const auto k){return B1(Is0)(Sub)(n)(k);};};
+  const auto Leq = [](const auto& n){return [=](const auto& k){return B1(Is0)(Sub)(n)(k);};};
 
   // Equal (==): Eq := \nk.And(Leq n k)(Leq k n)
-  const auto Eq = [](const auto n){return [=](const auto k){return And(Leq(n)(k))(Leq(k)(n));};};
+  const auto Eq = [](const auto& n){return [=](const auto& k){return And(Leq(n)(k))(Leq(k)(n));};};
 
   // Greater Than Or Eq (>=): Geq := \nk.B1 Is0 Sub k n
-  const auto Geq = [](const auto n){return [=](const auto k){return B1(Is0)(Sub)(k)(n);};};
+  const auto Geq = [](const auto& n){return [=](const auto& k){return B1(Is0)(Sub)(k)(n);};};
 
   // Greater Than (>): Gt := \nk.B1 Not Leq n k
-  const auto Gt = [](const auto n){return [=](const auto k){return B1(Not)(Leq)(n)(k);};};
+  const auto Gt = [](const auto& n){return [=](const auto& k){return B1(Not)(Leq)(n)(k);};};
 
   // Less Than (<): Lt := \nk.B1 Not Geq n k
-  const auto Lt = [](const auto n){return [=](const auto k){return B1(Not)(Geq)(n)(k);};};
+  const auto Lt = [](const auto& n){return [=](const auto& k){return B1(Not)(Geq)(n)(k);};};
 
   /**********************************************************************************
    *  \\   //===)  //^\\  /|    //===)    /|==\ \\ // /|==\\ /|    //==\\ ||^\\ /|==\ 
@@ -348,22 +349,22 @@ namespace LambdaCalc {
   // Handling Undefined Behavior: We define Div a 0 = 0
 
   // DivPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Add(Snd p)b))
-  const auto DivPhi = [](const auto a){return [=](const auto b){return [=](const auto p){
+  const auto DivPhi = [](const auto& a){return [=](const auto& b){return [=](const auto& p){
     return Geq(Snd(p))(a) (p) (V(Succ(Fst(p)))(Add(Snd(p))(b)));
   };};};
 
   // DivIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(DivPhi a b)(V Zero Zero)))
-  const auto DivIter = [](const auto a){return [=](const auto b){
+  const auto DivIter = [](const auto& a){return [=](const auto& b){
     return Or(Lt(a)(b))(Is0(b)) (Zero) (Fst(a(DivPhi(a)(b))(V(Zero)(Zero))));
   };};
 
   // DivRes := \abn.Gt(Mult b n)a(Pred n)n
-  const auto DivRes = [](const auto a){return [=](const auto b){return [=](const auto n){
+  const auto DivRes = [](const auto& a){return [=](const auto& b){return [=](const auto& n){
     return Gt(Mult(b)(n))(a) (Pred(n)) (n);
   };};};
 
   // Div := \ab.DivRes a b (DivIter a b)
-  const auto Div = [](const auto a){return [=](const auto b){
+  const auto Div = [](const auto& a){return [=](const auto& b){
     return DivRes(a)(b)(DivIter(a)(b));
   };};
 
@@ -374,22 +375,22 @@ namespace LambdaCalc {
   // Handling Undefined Behavior: We define Log 0 b = 0 && Log 1 b = 1
 
   // LogPhi := \abp.Geq(Snd p)a p (V(B Succ Fst p)(Mult(Snd p)b))
-  const auto LogPhi = [](const auto a){return [=](const auto b){return [=](const auto p){
+  const auto LogPhi = [](const auto& a){return [=](const auto& b){return [=](const auto& p){
     return Geq(Snd(p))(a) (p) (V(Succ(Fst(p)))(Mult(Snd(p))(b)));
   };};};
 
   // LogIter := \ab.Or(Lt a b)(Is0 b) Zero (Fst(a(LogPhi a b)(V Zero Once)))
-  const auto LogIter = [](const auto a){return [=](const auto b){
+  const auto LogIter = [](const auto& a){return [=](const auto& b){
     return Or(Lt(a)(b))(Is0(b)) (Zero) (Fst(a(LogPhi(a)(b))(V(Zero)(Once))));
   };};
 
   // LogRes := \abn.Gt(Pow b n)a(Pred n)n
-  const auto LogRes = [](const auto a){return [=](const auto b){return [=](const auto n){
+  const auto LogRes = [](const auto& a){return [=](const auto& b){return [=](const auto& n){
     return Gt(Pow(b)(n))(a) (Pred(n)) (n);
   };};};
 
   // Log := \ab.Is0(Pred a) a (LogRes b a (LogIter b a))
-  const auto Log = [](const auto a){return [=](const auto b){
+  const auto Log = [](const auto& a){return [=](const auto& b){
     return Is0(Pred(a))
             (a)
             (LogRes(b)(a)(LogIter(b)(a)));
@@ -401,13 +402,13 @@ namespace LambdaCalc {
 
   // Returns Vireo where Fst = counter+1==m?Zero:counter+1, Snd = counter+1==m
   // IsFactorPhi := \mp.V (Eq(B Succ Fst p)m Zero (B Succ Fst p)) (Eq(B Succ Fst p)m)
-  const auto IsFactorPhi = [](const auto m){return [=](const auto p){
+  const auto IsFactorPhi = [](const auto& m){return [=](const auto& p){
     return V (Eq(B(Succ)(Fst)(p))(m)(Zero)(B(Succ)(Fst)(p))) (Eq(B(Succ)(Fst)(p))(m));
   };};
 
   // Returns whether Church Numeral 'm' is a factor Church Numeral 'n'
   // IsFactor := \mn.Is0 m False (Is0 n True (B Is0 Pred m True (Gt m n False (Eq m n True (Snd (n (IsFactorPhi m) (V Zero True)))))))
-  const auto IsFactor = [](const auto m){return [=](const auto n){
+  const auto IsFactor = [](const auto& m){return [=](const auto& n){
     return Is0(m) 
             (False)         // can't divide by 0
             (Is0(n)
@@ -440,13 +441,13 @@ namespace LambdaCalc {
   // Preforms Phi + Applies a given fcn to the old Fst & Snd & stores the result in the new Snd
   //   => Takes fcn as first arg to be able to bind it as a single fcn w/ Church Numerals
   // NumericApplyPhi := \fp.V(B Succ Fst p)(f(Fst p)(Snd p))
-  const auto NumericApplyPhi = [](const auto f){
-    return [=](const auto p){return V(Succ(Fst(p)))(f(Fst(p))(Snd(p)));};
+  const auto NumericApplyPhi = [](const auto& f){
+    return [=](const auto& p){return V(Succ(Fst(p)))(f(Fst(p))(Snd(p)));};
   };
 
   // Map a binary fcn f across Church Numerals [m,n] via 'Vireo'
   // NumericApplyToRange := \fmn.Snd(n(NumericApplyPhi f)(V Once m))
-  const auto NumericApplyToRange = [](const auto f){return [=](const auto m){return [=](const auto n){
+  const auto NumericApplyToRange = [](const auto& f){return [=](const auto& m){return [=](const auto& n){
     return Snd(n(NumericApplyPhi(f))(V(Once)(m)));
   };};};
 
@@ -455,7 +456,7 @@ namespace LambdaCalc {
   // NumericSum := NumericApplyToRange Add Zero
   const auto NumericSum = NumericApplyToRange(Add)(Zero);
   // NumericSum [m,n]: NumericSumRange := \mn.Sub(NumericSum n)(NumericSum m)
-  const auto NumericSumRange = [](const auto m){return [=](const auto n){
+  const auto NumericSumRange = [](const auto& m){return [=](const auto& n){
     return Sub(NumericSum(n))(NumericSum(m));
   };};
 
@@ -476,7 +477,7 @@ namespace LambdaCalc {
   //   => IE: Tuple = SuccList(I)(Single)
   //   => IE: Triple = SuccList(B)(Tuple)
   // SuccList := \b.(SuccB b) C
-  const auto SuccList = [](const auto b){return SuccB(b)(C);};
+  const auto SuccList = [](const auto& b){return SuccB(b)(C);};
 
 
   // (Thrush) Single := \af.fa
@@ -492,11 +493,11 @@ namespace LambdaCalc {
 
   // VIREO PAIR GIVEN CONTAINS COMPOSER IN "Fst", LIST IN "Snd"
   // PhiList := \p.V (SuccB (Fst p)) (SuccList (Fst p) (Snd p))
-  const auto PhiList = [](const auto p){return V(SuccB(Fst(p)))(SuccList(Fst(p))(Snd(p)));};
+  const auto PhiList = [](const auto& p){return V(SuccB(Fst(p)))(SuccList(Fst(p))(Snd(p)));};
 
   // Returns Vireo Pair w/ Composer in 'Fst' & List in 'Snd', both handling 'n' args
   // ComposerListPairN := \n.n PhiList (V I Single)
-  const auto ComposerListPairN = [](const auto n){return n(PhiList)(V(I)(Single));};
+  const auto ComposerListPairN = [](const auto& n){return n(PhiList)(V(I)(Single));};
 
 
   // Returns Fcnal List Data Struct length n 
@@ -507,7 +508,7 @@ namespace LambdaCalc {
   // Returns Fcnal List Data Struct length n 
   //   => IE: ListN(Zero) = Th, ListN(Once) = Tuple, ListN(Twice) = Triple, etc
   // ListNData := \n.(Is0 n) Th (Snd (ComposerListPairN n))
-  const auto ListNData = [](const auto n){return Is0(n)(Th)(Snd(ComposerListPairN(n)));};
+  const auto ListNData = [](const auto& n){return Is0(n)(Th)(Snd(ComposerListPairN(n)));};
 
   /******************************************************************************
   * "ListN" PURELY FCNAL DATA STRUCT OF LIST FOR 'N' VALUES
@@ -518,7 +519,7 @@ namespace LambdaCalc {
   // n = list length
   // ListN := \n.B ComposerN Succ n (V n) ListNData (Pred n) 
   //   => Add 1 to Composer to also compose (Pred(n)) along w/ list
-  const auto ListN = [](const auto n){return B(ComposerN)(Succ)(n)(V(n))(ListNData)(Pred(n));};
+  const auto ListN = [](const auto& n){return B(ComposerN)(Succ)(n)(V(n))(ListNData)(Pred(n));};
 
   // Length of a List & Contents/Body of a List in: Vireo(Length)(List-Contents)
   const auto Length = Fst; // Length := Fst (PUBLIC)
@@ -535,20 +536,20 @@ namespace LambdaCalc {
 
   // __PRIVATE__: Returns Last Curried Arg of total # (n+1) of curried args
   // GetLast := \n.(Pred n) K KI
-  const auto GetLast = [](const auto n){return Pred(n)(K)(KI);};
+  const auto GetLast = [](const auto& n){return Pred(n)(K)(KI);};
 
   // __PRIVATE__: Returns First Curried Arg of total # (n+1) of curried args
   // GetFirst := \n.n K
-  const auto GetFirst = [](const auto n){return n(K);};
+  const auto GetFirst = [](const auto& n){return n(K);};
 
 
   // __PUBLIC__: FOR LIST CONSTRUCTS: Returns First fcn in list 'l'
   // Head := \l.B (Data l) GetFirst (Pred (Length l))
-  const auto Head = [](const auto l){return B(Data(l))(GetFirst)(Pred(Length(l)));};
+  const auto Head = [](const auto& l){return B(Data(l))(GetFirst)(Pred(Length(l)));};
 
   // __PUBLIC__: FOR LIST CONSTRUCTS: Returns Last fcn in list 'l'
   // Last := \l.Eq(Length l)Once (Head l) (B(Data l)GetLast(Pred(Length l)))
-  const auto Last = [](const auto l){
+  const auto Last = [](const auto& l){
     return Eq(Length(l))(Once)
             (Head(l)) 
             (B(Data(l))(GetLast)(Pred(Length(l))));
@@ -559,7 +560,7 @@ namespace LambdaCalc {
   //              (B GetFirst Pred (Length l))
   //              ((ComposerN n)(B1 GetFirst Sub (Length l) n)(B GetLast Pred n)))
   // => Great Heavens it appears I've gotten valid C++ to look like LISP
-  const auto Nth = [](const auto nth){return [=](const auto l){
+  const auto Nth = [](const auto& nth){return [=](const auto& l){
     return Data(l)(B(Is0)(Pred)(nth) 
             (B(GetFirst)(Pred)(Length(l))) 
             (ComposerN(nth) (B1(GetFirst)(Sub)(Length(l))(nth)) (B(GetLast)(Pred)(nth))));
@@ -571,7 +572,7 @@ namespace LambdaCalc {
 
   // Returns list w/ 'elt' in front of 'l's list (Push to front)
   // Push := \el.Is0(Length l)(ListN Once e)((Data l)(ListN(B Succ Length l)e))
-  const auto Push = [](const auto elt){return [=](const auto l){
+  const auto Push = [](const auto& elt){return [=](const auto& l){
     return Is0(Length(l))
             (ListN(Once)(elt))
             (Data(l)(ListN(B(Succ)(Length)(l))(elt)));
@@ -581,7 +582,7 @@ namespace LambdaCalc {
   // Reduces "position" in "Fst" by 1, pushes fcn at "position" in 'l' to 
   //   temporary List in "Snd"
   // PopPhi := \lp.V(B Pred Fst p)(Push(B Nth Fst p l)(Snd p))
-  const auto PopPhi = [](const auto l){return [=](const auto p){
+  const auto PopPhi = [](const auto& l){return [=](const auto& p){
     return V (B(Pred)(Fst)(p)) (Push(B(Nth)(Fst)(p)(l))(Snd(p)));
   };};
 
@@ -592,7 +593,7 @@ namespace LambdaCalc {
   // Pop := \l.Is0(B Pred Length l)
   //             (ListN Zero)
   //             (Snd(Sub(Length l)Twice (PopPhi l) (V(B Pred Length l)(ListN Once (Last l)))))
-  const auto Pop = [](const auto l){
+  const auto Pop = [](const auto& l){
     return Is0(B(Pred)(Length)(l))
             (ListN(Zero))
             (Snd( Sub(Length(l))(Twice) (PopPhi(l)) (V (B(Pred)(Length)(l)) (ListN(Once)(Last(l))) ) ));
@@ -605,13 +606,13 @@ namespace LambdaCalc {
   // Decrements "position" in "Fst", & Pushes List 'l's cell to temporary list 
   //   in "Snd" IFF cell value adheres to the given Unary "fcnal" Predicate 'f'
   // FilterPhi := \lfp.V(B Pred Fst p)( f(B Nth Fst p l) (Push(B Nth Fst p l)(Snd p)) (Snd p))
-  const auto FilterPhi = [](const auto l){return [=](const auto f){return [=](const auto p){
+  const auto FilterPhi = [](const auto& l){return [=](const auto& f){return [=](const auto& p){
     return V (B(Pred)(Fst)(p)) (f(B(Nth)(Fst)(p)(l)) (Push(B(Nth)(Fst)(p)(l))(Snd(p))) (Snd(p)));
   };};};
 
   // Returns list w/ cells from List 'l' Filtered thru Unary "fcnal" Predicate 'f'
   // Filter := \fl.Snd (Length l (FilterPhi l f) (V (Length l) (ListN Zero)))
-  const auto Filter = [](const auto f){return [=](const auto l){
+  const auto Filter = [](const auto& f){return [=](const auto& l){
     return Snd( Length(l) (FilterPhi(l)(f)) (V (Length(l)) (ListN(Zero))) );
   };};
 
@@ -621,13 +622,13 @@ namespace LambdaCalc {
 
   // Decrements current position & Pushes mapped elt to temporary List in "Snd"
   // MapPhi := \lfp.V(B Pred Fst p)(Push(f(B Nth Fst p l))(Snd p))
-  const auto MapPhi = [](const auto l){return [=](const auto f){return [=](const auto p){
+  const auto MapPhi = [](const auto& l){return [=](const auto& f){return [=](const auto& p){
     return V (B(Pred)(Fst)(p)) (Push(f(B(Nth)(Fst)(p)(l)))(Snd(p)));
   };};};
 
   // Returns list of each fcn in List 'l' after passing thru fcn 'f'
   // Map := \fl.Is0(Length l)l(Snd(B Pred Length l(MapPhi l f)(V (B Pred Length l)(ListN Once(B f Last l)))))
-  const auto Map = [](const auto f){return [=](const auto l){
+  const auto Map = [](const auto& f){return [=](const auto& l){
     return Is0(Length(l))
             (l)
             (Snd( B(Pred)(Length)(l) (MapPhi(l)(f)) (V (B(Pred)(Length)(l)) (ListN(Once)(B(f)(Last)(l)))) ));
@@ -639,7 +640,7 @@ namespace LambdaCalc {
   ******************************************************************************/
 
   // -:- IMPURE -:- Applies 'f' to 'n'th fcn in list 'l', PERFORMING A SIDE EFFECT
-  const auto IMPURE_VoidMapPhi = [](const auto l){return [=](const auto f){return [=](const auto n){
+  const auto IMPURE_VoidMapPhi = [](const auto& l){return [=](const auto& f){return [=](const auto& n){
     f(Nth(n)(l)); // SIDE EFFECT MAY OCCUR HERE
     return Succ(n);
   };};};
@@ -649,7 +650,7 @@ namespace LambdaCalc {
   // => !!! "VoidMap" IS VOID !!!
   // => "IMPURE" b/c fcn given must be performing side effects: likely I/O
   //    => Needed However to easy enable printing all fcns in a List.
-  const auto VoidMap = [](const auto f){return [=](const auto l){
+  const auto VoidMap = [](const auto& f){return [=](const auto& l){
     Length(l)(IMPURE_VoidMapPhi(l)(f))(Once);
   };};
 
@@ -660,7 +661,7 @@ namespace LambdaCalc {
   // Returns Vireo w/ "Fst"'s "position" Increased & having pushed fcn at 
   //   "position" in "l" to the temporary List in "Snd"
   // ReversePhi := \lp.V(B Succ Fst p)(Push(B Nth Fst p l)(Snd p))
-  const auto ReversePhi = [](const auto l){return [=](const auto p){
+  const auto ReversePhi = [](const auto& l){return [=](const auto& p){
     return V (B(Succ)(Fst)(p)) (Push(B(Nth)(Fst)(p)(l))(Snd(p)));
   };};
 
@@ -671,7 +672,7 @@ namespace LambdaCalc {
   // Reverse := \l.Is0(B Pred Length l)
   //                l
   //                (Snd(B Pred Length l(ReversePhi l)(V Twice(ListN Once(Head l)))))
-  const auto Reverse = [](const auto l){
+  const auto Reverse = [](const auto& l){
     return Is0(B(Pred)(Length)(l)) 
             (l)
             (Snd( B(Pred)(Length)(l) (ReversePhi(l)) (V(Twice)(ListN(Once)(Head(l)))) ));
@@ -688,11 +689,11 @@ namespace LambdaCalc {
   // Applies fcn 'f' to a list in reverse, _RETURNING A LIST_
   //   => From which may derive push_back, pop_back, etc
   // Backward := \f.B Reverse(B f Reverse)
-  const auto Backward = [](const auto f){return B(Reverse)(B(f)(Reverse));};
+  const auto Backward = [](const auto& f){return B(Reverse)(B(f)(Reverse));};
 
   // Applies fcn 'f' to a list in reverse, _RETURNING AN ATOM (IE Non-List Fcn)_
   // BackwardAtomic := \f.B f Reverse
-  const auto BackwardAtomic = [](const auto f){return B(f)(Reverse);};
+  const auto BackwardAtomic = [](const auto& f){return B(f)(Reverse);};
 
   /******************************************************************************
   * LIST ACCUMULATOR
@@ -701,14 +702,14 @@ namespace LambdaCalc {
   // Applies Phi & Folds Nth cell in List 'l' (Nth's n coming from (Fst p))
   //   over the prior value in (Snd p)
   // FoldlPhi := \flp.V(B Succ Fst p)(f(Nth(Fst p)l)(Snd p))
-  const auto FoldlPhi = [](const auto f){return [=](const auto l){return [=](const auto p){
+  const auto FoldlPhi = [](const auto& f){return [=](const auto& l){return [=](const auto& p){
     return V(Succ(Fst(p)))(f(Nth(Fst(p))(l))(Snd(p)));
   };};};
 
   // Fold cells in List 'l' on top of one another w/ BINARY fcn 'f',
   //   starting from "elt" on (Head l) (from 'l'eft to right)
   // Foldl := \fel.Is0(Length l)Zero(Snd((Length l)(FoldlPhi f l)(V Once e)))
-  const auto Foldl = [](const auto f){return [=](const auto elt){return [=](const auto l){
+  const auto Foldl = [](const auto& f){return [=](const auto& elt){return [=](const auto& l){
     return Is0(Length(l))
             (Zero)
             (Snd((Length(l))(FoldlPhi(f)(l))(V(Once)(elt)))); // (Once) b/c Nth starts @ 1
@@ -717,27 +718,27 @@ namespace LambdaCalc {
   // Fold cells in List 'l' on top of one another w/ BINARY fcn 'f',
   //   starting from "elt" on (Last l) (from 'r'ight to left)
   // Foldr := \fel.Is0(Length l)Zero(BackwardAtomic (Foldl f e) l)
-  const auto Foldr = [](const auto f){return [=](const auto elt){return [=](const auto l){
+  const auto Foldr = [](const auto& f){return [=](const auto& elt){return [=](const auto& l){
     return Is0(Length(l))
             (Zero)
             (BackwardAtomic (Foldl(f)(elt)) (l));
   };};};
 
   /******************************************************************************
-  * MAX/MIN OF LIST`
+  * MAX/MIN CHURCH NUMERAL OF LIST`
   ******************************************************************************/
 
-  // Returns Greatest Value in List
+  // Returns Greatest Church Numeral Value in List
   //   => Accumuates Greater Value, starting relative to Zero
   // Max := Foldl(\ab.Gt a b a b)Zero
-  const auto Max = Foldl([](const auto a){return [=](const auto b){
+  const auto Max = Foldl([](const auto& a){return [=](const auto& b){
     return Gt(a)(b)(a)(b);
   };})(Zero);
 
-  // Returns Smallest Value in List
+  // Returns Smallest Church Numeral Value in List
   //   => Accumuates Smaller Value, starting relative to 1st Value in List
   // Min := \l.Foldl(\ab.Lt a b a b)(Head l)l
-  const auto Min = [](const auto l){return Foldl([](const auto a){return [=](const auto b){
+  const auto Min = [](const auto& l){return Foldl([](const auto& a){return [=](const auto& b){
       return Lt(a)(b)(a)(b);
     };})(Head(l))(l);
   };
@@ -792,7 +793,7 @@ namespace LambdaCalc {
   // InsertPhi := \nelp.V (B Pred Fst p) ((Eq(Fst p)n) 
   //                                         (Push (B Nth Fst p l) (Push e(Snd p))) 
   //                                         (Push (B Nth Fst p l) (Snd p)))
-  const auto InsertPhi = [](const auto nth){return [=](const auto elt){return [=](const auto l){return [=](const auto p){
+  const auto InsertPhi = [](const auto& nth){return [=](const auto& elt){return [=](const auto& l){return [=](const auto& p){
     return V(Pred(Fst(p)))((Eq(Fst(p))(nth)) (Push(Nth(Fst(p))(l))(Push(elt)(Snd(p)))) (Push(Nth(Fst(p))(l))(Snd(p))));
   };};};};
 
@@ -803,7 +804,7 @@ namespace LambdaCalc {
   //                (Gt n (Length l) 
   //                   (Backward(Push e)l) 
   //                   (Snd(Length l (InsertPhi n e l)(V(Length l)(ListN Zero)))))
-  const auto Insert = [](const auto nth){return [=](const auto elt){return [=](const auto l){
+  const auto Insert = [](const auto& nth){return [=](const auto& elt){return [=](const auto& l){
     return Is0(nth)
            (Push(elt)(l))
            (Gt(nth)(Length(l))
@@ -815,7 +816,7 @@ namespace LambdaCalc {
   // Decrements value idx in 'Fst', & if idx != 'nth' erasure position, pushes 'l's value at idx 
   //   to temp List in 'Snd' -- else returns temp list in 'Snd' w/o Pushing 'nth' value
   // ErasePhi := \nlp.V(B Pred Fst p)((Eq(Fst p)n) (Snd p) (Push(B Nth Fst p l)(Snd p)))
-  const auto ErasePhi = [](const auto nth){return [=](const auto l){return [=](const auto p){
+  const auto ErasePhi = [](const auto& nth){return [=](const auto& l){return [=](const auto& p){
     return V(Pred(Fst(p)))((Eq(Fst(p))(nth)) (Snd(p)) (Push(Nth(Fst(p))(l))(Snd(p))));
   };};};
 
@@ -826,7 +827,7 @@ namespace LambdaCalc {
   //              (Or(Is0 n)(Gt n(Length l))
   //                 l
   //                 (Snd(Length l (ErasePhi n l) (V(Length l)(ListN Zero)))))
-  const auto Erase = [](const auto nth){return [=](const auto l){
+  const auto Erase = [](const auto& nth){return [=](const auto& l){
     return Is0(Length(l))
            (ListN(Zero))
            (Or(Is0(nth))(Gt(nth)(Length(l)))
@@ -840,20 +841,20 @@ namespace LambdaCalc {
   
   const auto ox0 = False; // \fa.a  -- Zero Compositions
   const auto ox1 = I;     // \fa.fa -- Compose Once
-  const auto ox2 = [](const auto f){return [=](const auto a){return f(f(a));};}; // \fa.f(fa)
-  const auto ox3 = [](const auto f){return [=](const auto a){return f(f(f(a)));};}; // \fa.f(f(fa))
-  const auto ox4 = [](const auto f){return [=](const auto a){return f(f(f(f(a))));};}; // \fa.f(f(f(fa)))
-  const auto ox5 = [](const auto f){return [=](const auto a){return f(f(f(f(f(a)))));};};
-  const auto ox6 = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(a))))));};};
-  const auto ox7 = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(a)))))));};};
-  const auto ox8 = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(a))))))));};};
-  const auto ox9 = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(a)))))))));};};
-  const auto oxa = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(a))))))))));};};
-  const auto oxb = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(f(a)))))))))));};};
-  const auto oxc = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(f(f(a))))))))))));};};
-  const auto oxd = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(f(f(f(a)))))))))))));};};
-  const auto oxe = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(f(f(f(f(a))))))))))))));};};
-  const auto oxf = [](const auto f){return [=](const auto a){return f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(a)))))))))))))));};};
+  const auto ox2 = [](const auto& f){return [=](const auto& a){return f(f(a));};}; // \fa.f(fa)
+  const auto ox3 = [](const auto& f){return [=](const auto& a){return f(f(f(a)));};}; // \fa.f(f(fa))
+  const auto ox4 = [](const auto& f){return [=](const auto& a){return f(f(f(f(a))));};}; // \fa.f(f(f(fa)))
+  const auto ox5 = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(a)))));};};
+  const auto ox6 = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(a))))));};};
+  const auto ox7 = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(a)))))));};};
+  const auto ox8 = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(a))))))));};};
+  const auto ox9 = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(a)))))))));};};
+  const auto oxa = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(a))))))))));};};
+  const auto oxb = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(f(a)))))))))));};};
+  const auto oxc = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(f(f(a))))))))))));};};
+  const auto oxd = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(f(f(f(a)))))))))))));};};
+  const auto oxe = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(f(f(f(f(a))))))))))))));};};
+  const auto oxf = [](const auto& f){return [=](const auto& a){return f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(a)))))))))))))));};};
 
 }; // End of LambdaCalc Namespace
 #endif
